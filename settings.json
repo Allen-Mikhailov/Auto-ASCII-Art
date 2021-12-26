@@ -1,0 +1,11 @@
+{
+    "inputtype": "folder.js",
+    "executiontype": "basic.js",
+    "warptype": "maintain-aspect-ratio.js",
+    "rendermode": "flexible-color.js",
+
+    "inputfile/folder": "Frames"   ,
+    "outputfile/folder": "output" ,
+
+    "colorthreshold": 0.05
+}
