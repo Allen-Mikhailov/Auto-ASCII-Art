@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascii Video Player</title>
+</head>
+<body>
+    <canvas id = "canvas"></canvas>
+    <script src="videodata.js"></script>
+    <script>
+        const chartopixels = {
+            " ": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            "┌": [[0, 0, 0], [0, 255, 255], [0, 255, 0]],
+            "┐": [[0, 0, 0], [255, 255, 0], [0, 255, 0]],
+            "─": [[0, 0, 0], [255, 255, 255], [0, 0, 0]],
+            "┬": [[0, 0, 0], [255, 255, 255], [0, 255, 0]],
+            "└": [[0, 255, 0], [0, 255, 255], [0, 0, 0]],
+            "│": [[0, 255, 0], [0, 255, 0], [0, 255, 0]],
+            "├": [[0, 255, 0], [0, 255, 255], [0, 255, 0]],
+            "┼": [[0, 255, 0], [255, 255, 255], [0, 255, 0]],
+            "┘": [[0, 255, 0], [255, 255, 0], [0, 0, 0]],
+            "┤": [[0, 255, 0], [255, 255, 0], [0, 255, 0]],
+            "┴": [[0, 255, 0], [255, 255, 255], [0, 0, 0]]
+        }
+
+        const frames = []
+        const width = videodata.width
+        const height = videodata.height
+
+        const rowsize = width*3*4
+
+        function colorpixel(array, y, x, value)
+        {
+            array[y*rowsize+x*4] = value
+            array[y*rowsize+x*4+1] = value
+            array[y*rowsize+x*4+2] = value
+            array[y*rowsize+x*4+3] = 255
+        }
+
+        for (var f = 0; f < videodata.FrameCount; f++)
+        {
+            const newarray = new Uint8ClampedArray((width * height)*4*9)
+            const frame = videodata["Frame"+f]
+
+            for (var y = 0; y < height; y++)
+            {
+                const offset = y*width
+                for (var x = 0; x < width; x++)
+                {
+                    const pixels = chartopixels[frame.charAt(offset+x)]
+
+                    colorpixel(newarray, y*3, x*3,   pixels[0][0])
+                    colorpixel(newarray, y*3, x*3+1, pixels[0][1])
+                    colorpixel(newarray, y, x*3+2, pixels[0][2])
+
+                    colorpixel(newarray, y*3+1, x*3,   pixels[1][0])
+                    colorpixel(newarray, y*3+1, x*3+1, pixels[1][1])
+                    colorpixel(newarray, y*3+1, x*3+2, pixels[1][2])
+
+                    colorpixel(newarray, y*3+2, x*3,   pixels[2][0])
+                    colorpixel(newarray, y*3+2, x*3+1, pixels[2][1])
+                    colorpixel(newarray, y*3+2, x*3+2, pixels[2][2])
+                } 
+            }
+
+            const nf = f
+
+            createImageBitmap(new ImageData(newarray, width*3, height*3)).then(function(data)
+            {
+                frames[nf] = data
+            })
+
+            console.log("Compiled Frame: "+f)
+        }
+
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        canvas.width = width*3
+        canvas.height = height*3
+
+        var frame = 0
+
+        function render()
+        {
+            frame = (frame+1)%(videodata.FrameCount*4)
+            if (frames[Math.floor(frame/4)])
+                ctx.drawImage(frames[Math.floor(frame/4)], 0, 0)
+            requestAnimationFrame(render)
+        }
+
+        render()
+    </script>
+</body>
+</html>
