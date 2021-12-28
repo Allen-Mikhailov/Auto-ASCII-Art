@@ -4,13 +4,27 @@
 
     </head>
 
-    <body>
+    <body onmousemove="mousemove(event)">
         <canvas id = "canvas">
 
         </canvas>
 
         <script>
             const canvas = document.getElementById("canvas")
+            const ctx = canvas.getContext('2d');
+
+            const pixelsx = 500
+            const pixelsy = 500
+
+            
+
+            function mousemove(event)
+            {
+                var cX = event.clientX;
+                var sX = event.screenX;
+                var cY = event.clientY;
+                var sY = event.screenY;
+            }
         </script>
     </body>
 
