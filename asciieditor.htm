@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html>
-    <head>
 
-    </head>
+<head>
 
-    <body onmousemove="mousemove(event)">
-        <canvas id = "canvas">
+</head>
 
-        </canvas>
+<body onmousemove="mousemove(event)">
+    <canvas id="canvas"></canvas>
+    <script src="assets/chartopixels.js"></script>
+    <script src="videodata.js"></script>
+    <script>
+        const exports = {}
 
-        <script>
-            const canvas = document.getElementById("canvas")
-            const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById("canvas")
+        const ctx = canvas.getContext('2d');
 
-            const pixelsx = 500
-            const pixelsy = 500
+        const xscale = 5
+        const yscale = 6
+        const pixelxsize = 3
+        const pixelysize = 5
 
-            
+        const pixeldata = []
 
-            function mousemove(event)
-            {
-                var cX = event.clientX;
-                var sX = event.screenX;
-                var cY = event.clientY;
-                var sY = event.screenY;
-            }
-        </script>
-    </body>
+        function mousemove(event) {
+            var cX = event.clientX;
+            var sX = event.screenX;
+            var cY = event.clientY;
+            var sY = event.screenY;
+        }
+    </script>
+</body>
 
 </html>
