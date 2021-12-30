@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body onmousemove="mousemove(event)">
+    <script>
+        const exports = {}
+    </script>
+    <script src="assets/chartopixels.js"></script>
+    <script src="RenderMode/black-white.js"></script>
+    <script>
+
+        const body = document.body
+
+        const textelements = []
+
+        const pixelsx = 100;
+        const pixelsy = 10;
+
+        for (var i = 0; i < pixelsy-1; i++)
+        {
+            const newelement = document.createElement("p")
+            newelement.style = "font-size: 2px; margin-bottom: -2px"
+            body.appendChild(newelement)
+            textelements[i] = newelement
+        }
+        
+        function mousemove()
+        {
+
+        }
+
+        const imagedata = []
+
+        function update()
+        {
+            for (var y = 0; y < pixelsy-1; y++)
+            {
+                var str = ""
+                for (var x = 0; x < pixelsx-1; x++)
+                {
+                    str += "┼"
+                }
+                textelements[y].innerHTML = str
+            }
+        }
+
+        update()
+    </script>
+</body>
+
+</html>
