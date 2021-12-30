@@ -19,7 +19,7 @@ const blocktable = {
 
 const div = 255*3
 
-exports.function = function(pixelget, settings, data, size)
+exports.render = function(pixelget, settings, data, size)
 {
     owidth = size[0]
     oheight = size[1]

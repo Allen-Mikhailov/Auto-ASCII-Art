@@ -6,28 +6,36 @@
 </head>
 
 <body onmousemove="mousemove(event)">
-    <canvas id="canvas"></canvas>
     <script src="assets/chartopixels.js"></script>
-    <script src="videodata.js"></script>
+    <!-- <script src="videodata.js"></script> -->
     <script>
         const exports = {}
 
-        const canvas = document.getElementById("canvas")
-        const ctx = canvas.getContext('2d');
+        const 
 
-        const xscale = 5
-        const yscale = 6
-        const pixelxsize = 3
-        const pixelysize = 5
+        const pixelsx = 100;
+        const pixelsy = 4;
 
-        const pixeldata = []
+        canvas.style = "font-size: 2px"
+        
 
-        function mousemove(event) {
-            var cX = event.clientX;
-            var sX = event.screenX;
-            var cY = event.clientY;
-            var sY = event.screenY;
+        const imagedata = []
+
+        function update()
+        {
+            var str = ""
+            for (var x = 0; x < pixelsx-1; x++)
+            {
+                for (var y = 0; y < pixelsy-1; y++)
+                {
+                    str += "┼"
+                }
+                str += "\n"
+            }
+            canvas.innerHTML = str
         }
+
+        update()
     </script>
 </body>
 
