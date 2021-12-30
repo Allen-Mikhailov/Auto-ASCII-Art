@@ -1,12 +1,12 @@
-p.test {
+p.scalecheck {
     position: absolute;
-    visibility: hidden;
+    /* visibility: hidden; */
     height: auto;
     width: auto;
-    color: red;
+    white-space: nowrap;
+    margin: 0px;
 }
 
-p {
-    margin : 0; 
-    padding-top:0;
+body {
+    margin: 0px;
 }
