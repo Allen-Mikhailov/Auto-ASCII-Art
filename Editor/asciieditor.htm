@@ -2,45 +2,68 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="editorstyle.css">
 
 </head>
 
-<body onmousemove="mousemove(event)">
+<body>
     <script>
         const exports = {}
     </script>
-    <script src="assets/chartopixels.js"></script>
-    <script src="RenderMode/black-white.js"></script>
+    <script src="../ImageConversion/assets/chartopixels.js"></script>
+    <script src="../ImageConversion/RenderMode/black-white.js"></script>
     <script>
 
         const body = document.body
 
+        body.style.marginTop = "0px"
+        body.style.marginLeft = "0px"
+
         const textelements = []
 
-        const pixelsx = 100;
-        const pixelsy = 10;
+        const fontsize = 11
 
-        for (var i = 0; i < pixelsy-1; i++)
+        //Getting scale to use for future calculations
+        const scaleelement = document.createElement("p")
+        scaleelement.style["fontSize"] = ""+fontsize+"px"
+        scaleelement.style["marginBottom"] = "-"+fontsize+"px"
+        scaleelement.className = "test"
+        body.appendChild(scaleelement)
+
+        scaleelement.innerHTML = "┼"
+
+        const charheight = scaleelement.clientHeight+2
+        const charwidth = scaleelement.clientWidth
+
+        const charsx = Math.floor(screen.availWidth/charwidth)
+        const charsy = Math.floor(screen.availHeight/charheight)
+
+
+        console.log(charsx+" "+charsy)
+
+        for (var i = 0; i < charsy; i++)
         {
             const newelement = document.createElement("p")
-            newelement.style = "font-size: 2px; margin-bottom: -2px"
+            newelement.style["fontSize"] = ""+fontsize+"px"
+            // newelement.style["marginBottom"] = "0px"
+            // newelement.style.marginTop = "0px"
             body.appendChild(newelement)
             textelements[i] = newelement
         }
-        
-        function mousemove()
-        {
 
+        body.onmousemove = function(event)
+        {
+            
         }
 
         const imagedata = []
 
         function update()
         {
-            for (var y = 0; y < pixelsy-1; y++)
+            for (var y = 0; y < charsy; y++)
             {
                 var str = ""
-                for (var x = 0; x < pixelsx-1; x++)
+                for (var x = 0; x < charsx; x++)
                 {
                     str += "┼"
                 }
