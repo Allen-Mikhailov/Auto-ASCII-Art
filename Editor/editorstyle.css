@@ -1,0 +1,12 @@
+p.test {
+    position: absolute;
+    visibility: hidden;
+    height: auto;
+    width: auto;
+    color: red;
+}
+
+p {
+    margin : 0; 
+    padding-top:0;
+}
