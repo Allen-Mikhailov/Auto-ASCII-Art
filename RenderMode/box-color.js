@@ -4,7 +4,7 @@ const div = 255*3
 
 const abs = Math.abs
 
-exports.function = function(pixelget, settings, data, size, args)
+exports.render = function(pixelget, settings, data, size, args)
 {
     const colorthreshold = args.colorthreshold || settings.colorthreshold 
 
