@@ -7,71 +7,34 @@
 </head>
 
 <body>
+    <p id="sizecheck" class="scalecheck" style="font-size: 14px;">┼</p>
     <script>
-        const exports = {}
-    </script>
-    <script src="../ImageConversion/assets/chartopixels.js"></script>
-    <script src="../ImageConversion/RenderMode/black-white.js"></script>
-    <script>
+        //Size management
 
-        const body = document.body
+        const screenwidth = screen.width
+        const screenheight = screen.height
+        
+        const sizecheck = document.getElementById("sizecheck")
+        const sizerect = sizecheck.getBoundingClientRect()
 
-        body.style.marginTop = "0px"
-        body.style.marginLeft = "0px"
+        const charwidth = sizerect.width
+        const charheight = sizerect.height*1.25
 
-        const textelements = []
+        const charsx = Math.floor(screenwidth/charwidth)
+        const charsy = Math.floor(screenheight/charheight)
 
-        const fontsize = 11
-
-        //Getting scale to use for future calculations
-        const scaleelement = document.createElement("p")
-        scaleelement.style["fontSize"] = ""+fontsize+"px"
-        scaleelement.style["marginBottom"] = "-"+fontsize+"px"
-        scaleelement.className = "test"
-        body.appendChild(scaleelement)
-
-        scaleelement.innerHTML = "┼"
-
-        const charheight = scaleelement.clientHeight+2
-        const charwidth = scaleelement.clientWidth
-
-        const charsx = Math.floor(screen.availWidth/charwidth)
-        const charsy = Math.floor(screen.availHeight/charheight)
-
-
-        console.log(charsx+" "+charsy)
-
-        for (var i = 0; i < charsy; i++)
+        var str = ""
+        for (var y = 0; y < charsy; y++)
         {
-            const newelement = document.createElement("p")
-            newelement.style["fontSize"] = ""+fontsize+"px"
-            // newelement.style["marginBottom"] = "0px"
-            // newelement.style.marginTop = "0px"
-            body.appendChild(newelement)
-            textelements[i] = newelement
-        }
-
-        body.onmousemove = function(event)
-        {
-            
-        }
-
-        const imagedata = []
-
-        function update()
-        {
-            for (var y = 0; y < charsy; y++)
+            for (var x = 0; x < charsx; x++)
             {
-                var str = ""
-                for (var x = 0; x < charsx; x++)
-                {
-                    str += "┼"
-                }
-                textelements[y].innerHTML = str
+                str += "┼"
             }
+            str += "<br>"
         }
+        sizecheck.innerHTML = str
 
-        update()
+        
     </script>
 </body>
 
