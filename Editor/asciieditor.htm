@@ -3,25 +3,33 @@
 
 <head>
     <link rel="stylesheet" href="editorstyle.css">
-
+    <script>
+    const exports = {}
+    </script>
+    <script src="../ImageConversion/RenderMode/black-white.js"></script>
 </head>
 
 <body>
-    <p id="sizecheck" class="scalecheck" style="font-size: 14px;">┼</p>
+    <p id="canvas" class="scalecheck" style="font-size: 14px;">┼</p>
     <script>
         //Size management
 
         const screenwidth = screen.width
         const screenheight = screen.height
         
-        const sizecheck = document.getElementById("sizecheck")
-        const sizerect = sizecheck.getBoundingClientRect()
+        const canvas = document.getElementById("canvas")
+        const sizerect = canvas.getBoundingClientRect()
 
         const charwidth = sizerect.width
         const charheight = sizerect.height*1.25
 
         const charsx = Math.floor(screenwidth/charwidth)
         const charsy = Math.floor(screenheight/charheight)
+
+        const pixelsx = charsx+1
+        const pixelsy = charsy+1
+
+        const rendersize = [pixelsx, pixelsy, pixelsx, pixelsy]
 
         var str = ""
         for (var y = 0; y < charsy; y++)
@@ -32,33 +40,63 @@
             }
             str += "<br>"
         }
-        sizecheck.innerHTML = str
+        canvas.innerHTML = str
+
+        const pixeldata = []
+        for (var i = 0; i < (pixelsx)*(pixelsy)*4; i++)
+        {
+            pixeldata[i] = 0
+        }
+
+        function pixelget(x, y)
+        {
+            return [x, charsy-1-y]
+        }
 
         var MouseX
         var MouseY
 
+        var LastSelectedValue = 0
+
         function calculateSelectedCharacter() {
             return [Math.floor((MouseX+charwidth/2)/charwidth), Math.floor((MouseY+sizerect.height/2)/sizerect.height)]
+        }
+
+        function colorpixel(index, value)
+        {
+            pixeldata[index] = value
+            pixeldata[index+1] = value
+            pixeldata[index+2] = value
+            pixeldata[index+3] = value
         }
 
         function mousemove(event)
         {
             const lastselected = calculateSelectedCharacter()
 
-            var selectedindex = lastselected[0]+lastselected[1]*(charsx+4)
-
-            str = str.substring(0, selectedindex) + "┼"+ str.substring(selectedindex + 1);
+            const lastselectedindex = (lastselected[0]+lastselected[1]*(charsx+4))*4
 
             MouseX = event.clientX
             MouseY = event.clientY
 
             const currentselected = calculateSelectedCharacter()
 
-            selectedindex = currentselected[0]+currentselected[1]*(charsx+4)
+            const selectedindex = (currentselected[0]+currentselected[1]*(charsx+4))*4
 
-            str = str.substring(0, selectedindex) + "█"+ str.substring(selectedindex + 1);
+            if (lastselectedindex != selectedindex)
+            {
+                if (LastSelectedValue == 0)
+                    colorpixel(lastselectedindex, 0)
 
-            sizecheck.innerHTML = str
+                LastSelectedValue = pixeldata[selectedindex]
+                colorpixel(selectedindex, 255)
+
+                canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
+                // str = str.substring(0, lastselectedindex) + "┼"+ str.substring(lastselectedindex + 1);
+                // str = str.substring(0, selectedindex) + "█"+ str.substring(selectedindex + 1);
+            }
+
+            // canvas.innerHTML = str
         }
 
         document.body.onmousemove = mousemove
