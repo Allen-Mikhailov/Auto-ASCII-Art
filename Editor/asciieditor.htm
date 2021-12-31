@@ -34,7 +34,36 @@
         }
         sizecheck.innerHTML = str
 
-        
+        var MouseX
+        var MouseY
+
+        function calculateSelectedCharacter() {
+            return [Math.floor((MouseX+charwidth/2)/charwidth), Math.floor((MouseY+sizerect.height/2)/sizerect.height)]
+        }
+
+        function mousemove(event)
+        {
+            const lastselected = calculateSelectedCharacter()
+
+            var selectedindex = lastselected[0]+lastselected[1]*(charsx+4)
+
+            str = str.substring(0, selectedindex) + "┼"+ str.substring(selectedindex + 1);
+
+            MouseX = event.clientX
+            MouseY = event.clientY
+
+            const currentselected = calculateSelectedCharacter()
+
+            selectedindex = currentselected[0]+currentselected[1]*(charsx+4)
+
+            str = str.substring(0, selectedindex) + "█"+ str.substring(selectedindex + 1);
+
+            sizecheck.innerHTML = str
+        }
+
+        document.body.onmousemove = mousemove
+
+
     </script>
 </body>
 
