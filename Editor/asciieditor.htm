@@ -7,6 +7,7 @@
     const exports = {}
     </script>
     <script src="../ImageConversion/RenderMode/black-white.js"></script>
+    <meta charset="UTF-8">
 </head>
 
 <body>
@@ -34,14 +35,22 @@
         //Brush
         //First val is x second val is y
         //[0, 0, 1, 0] <= [[0, 0][1, 0]]
-        var brushdata = [-1, 1, -1, 0, -1, 1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
+        var brushdata = [-1, 1, -1, 0, -1, -1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
 
         //Rendering 
 
-        const pixeldata = []
-        for (var i = 0; i < (pixelsx)*(pixelsy)*4; i++)
+        const localstorage = window.localStorage
+
+        var pixeldata = localstorage.getItem("PixelData")
+        if (pixeldata)
         {
-            pixeldata[i] = 0
+            
+        } else {
+            pixeldata = []
+            for (var i = 0; i < (pixelsx)*(pixelsy)*4; i++)
+            {
+                pixeldata[i] = 0
+            }
         }
 
         function pixelget(x, y)
@@ -113,10 +122,17 @@
                 {
                     colorpixel(getIndex(bx+lastpos[0], by+lastpos[1])*4, 0)
                 }  
+            }
 
+            for (var i = 0; i < lasthoveredareavalue.length; i++)
+            {
+                const bx = brushdata[i*2]
+                const by = brushdata[i*2+1]
                 if (isvalidpos(bx+HoveredPos[0], by+HoveredPos[1]))
                 {
                     const index = getIndex(bx+HoveredPos[0], by+HoveredPos[1])*4
+                    if (mousedown)
+                        colorpixel(index, 255)
                     lasthoveredareavalue[i] = pixeldata[index]
                     colorpixel(index, 255)
                 }
@@ -128,6 +144,8 @@
         function update()
         {
             canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
+
+            localstorage.setItem("PixelData", pixeldata)
         }
 
         body.onmousedown = function()
