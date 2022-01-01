@@ -7,8 +7,10 @@ p.scalecheck {
     margin: 0px;
     font-family: monospace;
     user-select: none;
+    color: white;
 }
 
 body {
     margin: 0px;
+    background-color: black;
 }
