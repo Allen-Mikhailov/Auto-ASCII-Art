@@ -35,17 +35,6 @@
         //First val is x second val is y
         //[0, 0, 1, 0] <= [[0, 0][1, 0]]
         var brushdata = [-1, 1, -1, 0, -1, 1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
-        var compiledbrushdata = []
-
-        function CompileBrush(brush)
-        {
-            for (var i = 0; i < brush.length; i +=2)
-            {
-                compiledbrushdata[i/2] = brush[i]+brush[i+1]*pixelsx
-            }
-        }
-
-        CompileBrush(brushdata)
 
         //Rendering 
 
@@ -60,13 +49,20 @@
             return [x, pixelsy-1-y]
         }
 
-        var MouseX
-        var MouseY
-
-        var LastSelectedValue = 0
+        var HoveredPos
 
         function getHoveredCharacter(x, y) {
-            Math.floor((x+charwidth/2)/charwidth) + Math.floor((y+sizerect.height/2)/sizerect.height)*pixelsx
+            return [Math.floor((x+charwidth/2)/charwidth), Math.floor((y+sizerect.height/2)/sizerect.height)]
+        }
+
+        function getHoveredCharacterIndex(x, y)
+        {
+            return Math.floor((x+charwidth/2)/charwidth) + Math.floor((y+sizerect.height/2)/sizerect.height)*pixelsx
+        }
+
+        function getIndex(x, y)
+        {
+            return y*pixelsx + x
         }
 
         function colorpixel(index, value)
@@ -80,20 +76,37 @@
         const body = document.body
 
         var mousedown = false
-
-        body.onmousedown = function()
+        var lasthoveredareavalue = []
+        for (var i = 0; i < brushdata.length/2; i++)
         {
-            mousedown = true
-        }
-
-        body.onmouseup = function()
-        {
-            mousedown = false
+            lasthoveredareavalue[i] = 0   
         }
 
         function onmousemove(event)
         {
+            const lastindex = getHoveredCharacter(MouseX, MouseY)
 
+            MouseX = event.clientX
+            MouseY = event.clientY
+
+            const currentindex = getHoveredCharacter(MouseX, MouseY)
+
+            if (lastindex != currentindex)
+            {
+                refreshcursor(lastindex)
+            }
+        }
+
+        function refreshcursor(lastindex)
+        {
+            const currentindex = getHoveredCharacter(MouseX, MouseY)
+            for (var i = 0; i < lasthoveredareavalue.length; i++)
+            {
+                if (lasthoveredareavalue[i] == 0)
+                {
+                    
+                }  
+            }
         }
 
         function update()
@@ -124,16 +137,23 @@
             }
         }
 
+        body.onmousedown = function()
+        {
+            mousedown = true
+        }
+
+        body.onmouseup = function()
+        {
+            mousedown = false
+        }
+
         body.onkeydown = function(event)
         {
             const key = event.key
         }
 
-
         canvas.style.whiteSpace = "pre"
         body.onmousemove = mousemove
-
-
     </script>
 </body>
 
