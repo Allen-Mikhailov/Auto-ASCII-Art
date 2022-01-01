@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" href="editorstyle.css">
     <script>
-    const exports = {}
+        const exports = {}
     </script>
     <script src="../ImageConversion/RenderMode/black-white.js"></script>
     <meta charset="UTF-8">
@@ -13,22 +13,36 @@
 <body>
     <p id="canvas" class="scalecheck" style="font-size: 14px;">.</p>
     <script>
+        //Saving
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
         //Size management
 
         const screenwidth = screen.width
         const screenheight = screen.height
-        
+
         const canvas = document.getElementById("canvas")
         const sizerect = canvas.getBoundingClientRect()
 
         const charwidth = sizerect.width
-        const charheight = sizerect.height*1.25
+        const charheight = sizerect.height * 1.25
 
-        const charsx = Math.floor(screenwidth/charwidth)
-        const charsy = Math.floor(screenheight/charheight)-1
+        const charsx = Math.floor(screenwidth / charwidth)
+        const charsy = Math.floor(screenheight / charheight) - 1
 
-        const pixelsx = charsx+1
-        const pixelsy = charsy+1
+        const pixelsx = charsx + 1
+        const pixelsy = charsy + 1
 
         const rendersize = [pixelsx, pixelsy, pixelsx, pixelsy]
 
@@ -42,95 +56,80 @@
         const localstorage = window.localStorage
 
         var pixeldata = localstorage.getItem("PixelData")
-        if (pixeldata)
-        {
-            
+        if (pixeldata) {
+            pixeldata = JSON.parse(pixeldata)
         } else {
             pixeldata = []
-            for (var i = 0; i < (pixelsx)*(pixelsy)*4; i++)
-            {
+            for (var i = 0; i < (pixelsx) * (pixelsy) * 4; i++) {
                 pixeldata[i] = 0
             }
         }
 
-        function pixelget(x, y)
-        {
-            return [x, pixelsy-1-y]
+        function pixelget(x, y) {
+            return [x, pixelsy - 1 - y]
         }
 
         var HoveredPos = [0, 0]
 
         function getHoveredCharacter(x, y) {
-            return [Math.floor((x+charwidth/2)/charwidth), Math.floor((y+sizerect.height/2)/sizerect.height)]
+            return [Math.floor((x + charwidth / 2) / charwidth), Math.floor((y + sizerect.height / 2) / sizerect.height)]
         }
 
-        function getHoveredCharacterIndex(x, y)
-        {
-            return Math.floor((x+charwidth/2)/charwidth) + Math.floor((y+sizerect.height/2)/sizerect.height)*pixelsx
+        function getHoveredCharacterIndex(x, y) {
+            return Math.floor((x + charwidth / 2) / charwidth) + Math.floor((y + sizerect.height / 2) / sizerect.height) * pixelsx
         }
 
-        function getIndex(x, y)
-        {
-            return y*pixelsx + x
+        function getIndex(x, y) {
+            return y * pixelsx + x
         }
 
-        function colorpixel(index, value)
-        {
+        function colorpixel(index, value) {
             pixeldata[index] = value
-            pixeldata[index+1] = value
-            pixeldata[index+2] = value
-            pixeldata[index+3] = value
+            pixeldata[index + 1] = value
+            pixeldata[index + 2] = value
+            pixeldata[index + 3] = value
         }
 
         const body = document.body
 
         var mousedown = false
         var lasthoveredareavalue = []
-        for (var i = 0; i < brushdata.length/2; i++)
-        {
-            lasthoveredareavalue[i] = 0   
+        for (var i = 0; i < brushdata.length / 2; i++) {
+            lasthoveredareavalue[i] = 0
         }
 
-        function onmousemove(event)
-        {
+        function onmousemove(event) {
             const lastpos = HoveredPos
             const lastindex = getIndex(lastpos[0], lastpos[1])
-            
+
             MouseX = event.clientX
             MouseY = event.clientY
 
             HoveredPos = getHoveredCharacter(MouseX, MouseY)
 
-            if (lastindex != getIndex(HoveredPos[0], HoveredPos[1]))
-            {
+            if (lastindex != getIndex(HoveredPos[0], HoveredPos[1])) {
                 refreshcursor(lastpos)
             }
         }
 
-        function isvalidpos(x, y)
-        {
+        function isvalidpos(x, y) {
             return x > 0 && x < pixelsx && y > 0 && y < pixelsy
         }
 
-        function refreshcursor(lastpos)
-        {
-            for (var i = 0; i < lasthoveredareavalue.length; i++)
-            {
-                const bx = brushdata[i*2]
-                const by = brushdata[i*2+1]
-                if (lasthoveredareavalue[i] == 0 && isvalidpos(bx+lastpos[0], by+lastpos[1]))
-                {
-                    colorpixel(getIndex(bx+lastpos[0], by+lastpos[1])*4, 0)
-                }  
+        function refreshcursor(lastpos) {
+            for (var i = 0; i < lasthoveredareavalue.length; i++) {
+                const bx = brushdata[i * 2]
+                const by = brushdata[i * 2 + 1]
+                if (lasthoveredareavalue[i] == 0 && isvalidpos(bx + lastpos[0], by + lastpos[1])) {
+                    colorpixel(getIndex(bx + lastpos[0], by + lastpos[1]) * 4, 0)
+                }
             }
 
-            for (var i = 0; i < lasthoveredareavalue.length; i++)
-            {
-                const bx = brushdata[i*2]
-                const by = brushdata[i*2+1]
-                if (isvalidpos(bx+HoveredPos[0], by+HoveredPos[1]))
-                {
-                    const index = getIndex(bx+HoveredPos[0], by+HoveredPos[1])*4
+            for (var i = 0; i < lasthoveredareavalue.length; i++) {
+                const bx = brushdata[i * 2]
+                const by = brushdata[i * 2 + 1]
+                if (isvalidpos(bx + HoveredPos[0], by + HoveredPos[1])) {
+                    const index = getIndex(bx + HoveredPos[0], by + HoveredPos[1]) * 4
                     if (mousedown)
                         colorpixel(index, 255)
                     lasthoveredareavalue[i] = pixeldata[index]
@@ -141,26 +140,26 @@
             update()
         }
 
-        function update()
-        {
+        function update() {
             canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
 
-            localstorage.setItem("PixelData", pixeldata)
+            localstorage.setItem("PixelData", JSON.stringify(pixeldata))
         }
 
-        body.onmousedown = function()
-        {
+        body.onmousedown = function () {
             mousedown = true
         }
 
-        body.onmouseup = function()
-        {
+        body.onmouseup = function () {
             mousedown = false
         }
 
-        body.onkeydown = function(event)
-        {
+        body.onkeydown = function (event) {
             const key = event.key
+
+            if (key == "s") {
+                download("image.txt", canvas.innerHTML.replaceAll("<br>", "\n"))
+            }
         }
 
         canvas.style.whiteSpace = "pre"
