@@ -142,8 +142,6 @@
 
         function update() {
             canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
-
-            localstorage.setItem("PixelData", JSON.stringify(pixeldata))
         }
 
         body.onmousedown = function () {
@@ -154,11 +152,22 @@
             mousedown = false
         }
 
+        window.onbeforeunload = function(){
+            localstorage.setItem("PixelData", JSON.stringify(pixeldata))
+        }
+
         body.onkeydown = function (event) {
             const key = event.key
 
             if (key == "s") {
                 download("image.txt", canvas.innerHTML.replaceAll("<br>", "\n"))
+            } else if (key == "c") {
+                for (var i = 0; i < pixeldata.length; i++)
+                {
+                    pixeldata[i] = 0
+                }
+                localstorage.setItem("PixelData", JSON.stringify(pixeldata))
+                update()
             }
         }
 
