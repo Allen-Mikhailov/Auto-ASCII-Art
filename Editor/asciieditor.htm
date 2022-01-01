@@ -46,18 +46,46 @@
 
         const rendersize = [pixelsx, pixelsy, pixelsx, pixelsy]
 
+        const body = document.body
+
+        //Storage
+        const localstorage = window.localStorage
+        localstorage.clear()
+
+        var pixeldata = localstorage.getItem("PixelData")
+        if (pixeldata) {
+            pixeldata = JSON.parse(pixeldata)
+        } else {
+            pixeldata = []
+            for (var i = 0; i < (pixelsx) * (pixelsy) * 4; i++) {
+                pixeldata[i] = 0
+            }
+        }
+
         //Brush
         //First val is x second val is y
         //[0, 0, 1, 0] <= [[0, 0][1, 0]]
         var brushdata = [-1, 1, -1, 0, -1, -1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
 
         const YCompression = charheight/charwidth
-
-        //Radius
         var BrushSize = 10
+
+        var mousedown = false
+        var lasthoveredareavalue = []
+        for (var i = 0; i < brushdata.length / 2; i++) {
+            lasthoveredareavalue[i] = 0
+        }
 
         function UpdateBrush()
         {
+            for (var i = 0; i < lasthoveredareavalue.length; i++) {
+                const bx = brushdata[i * 2]
+                const by = brushdata[i * 2 + 1]
+                if (lasthoveredareavalue[i] == 0 && isvalidpos(bx + lastpos[0], by + lastpos[1])) {
+                    colorpixel(getIndex(bx + lastpos[0], by + lastpos[1]) * 4, 0)
+                }
+            }
+
             brushdata = []
             for (var x = -BrushSize; x <= BrushSize; x++)
             {
@@ -75,21 +103,7 @@
 
         UpdateBrush()
 
-        //Rendering 
-
-        const localstorage = window.localStorage
-        localstorage.clear()
-
-        var pixeldata = localstorage.getItem("PixelData")
-        if (pixeldata) {
-            pixeldata = JSON.parse(pixeldata)
-        } else {
-            pixeldata = []
-            for (var i = 0; i < (pixelsx) * (pixelsy) * 4; i++) {
-                pixeldata[i] = 0
-            }
-        }
-
+        //Pixel Functions
         function pixelget(x, y) {
             return [x, pixelsy - 1 - y]
         }
@@ -115,13 +129,7 @@
             pixeldata[index + 3] = value
         }
 
-        const body = document.body
-
-        var mousedown = false
-        var lasthoveredareavalue = []
-        for (var i = 0; i < brushdata.length / 2; i++) {
-            lasthoveredareavalue[i] = 0
-        }
+        //Rendering 
 
         function onmousemove(event) {
             const lastpos = HoveredPos
@@ -142,6 +150,7 @@
         }
 
         function refreshcursor(lastpos) {
+            lastpos = lastpos || HoveredPos
             for (var i = 0; i < lasthoveredareavalue.length; i++) {
                 const bx = brushdata[i * 2]
                 const by = brushdata[i * 2 + 1]
@@ -194,6 +203,14 @@
                 }
                 localstorage.setItem("PixelData", JSON.stringify(pixeldata))
                 update()
+            } else if (key == "+" || key == "=") {
+                BrushSize++;
+                UpdateBrush();
+                refreshcursor()
+            } else if (key == "-" || key == "_") {
+                BrushSize--;
+                UpdateBrush();
+                refreshcursor();
             }
         }
 
