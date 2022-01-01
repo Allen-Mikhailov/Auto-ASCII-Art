@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <p id="canvas" class="scalecheck" style="font-size: 14px;">┼</p>
+    <p id="canvas" class="scalecheck" style="font-size: 14px;">.</p>
     <script>
         //Size management
 
@@ -24,23 +24,30 @@
         const charheight = sizerect.height*1.25
 
         const charsx = Math.floor(screenwidth/charwidth)
-        const charsy = Math.floor(screenheight/charheight)
+        const charsy = Math.floor(screenheight/charheight)-1
 
         const pixelsx = charsx+1
         const pixelsy = charsy+1
 
         const rendersize = [pixelsx, pixelsy, pixelsx, pixelsy]
 
-        var str = ""
-        for (var y = 0; y < charsy; y++)
+        //Brush
+        //First val is x second val is y
+        //[0, 0, 1, 0] <= [[0, 0][1, 0]]
+        var brushdata = [-1, 1, -1, 0, -1, 1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
+        var compiledbrushdata = []
+
+        function CompileBrush(brush)
         {
-            for (var x = 0; x < charsx; x++)
+            for (var i = 0; i < brush.length; i +=2)
             {
-                str += "┼"
+                compiledbrushdata[i/2] = brush[i]+brush[i+1]*pixelsx
             }
-            str += "<br>"
         }
-        canvas.innerHTML = str
+
+        CompileBrush(brushdata)
+
+        //Rendering 
 
         const pixeldata = []
         for (var i = 0; i < (pixelsx)*(pixelsy)*4; i++)
@@ -50,7 +57,7 @@
 
         function pixelget(x, y)
         {
-            return [x, charsy-1-y]
+            return [x, pixelsy-1-y]
         }
 
         var MouseX
@@ -58,8 +65,8 @@
 
         var LastSelectedValue = 0
 
-        function calculateSelectedCharacter() {
-            return [Math.floor((MouseX+charwidth/2)/charwidth), Math.floor((MouseY+sizerect.height/2)/sizerect.height)]
+        function getHoveredCharacter(x, y) {
+            Math.floor((x+charwidth/2)/charwidth) + Math.floor((y+sizerect.height/2)/sizerect.height)*pixelsx
         }
 
         function colorpixel(index, value)
@@ -70,36 +77,61 @@
             pixeldata[index+3] = value
         }
 
-        function mousemove(event)
+        const body = document.body
+
+        var mousedown = false
+
+        body.onmousedown = function()
         {
+            mousedown = true
+        }
+
+        body.onmouseup = function()
+        {
+            mousedown = false
+        }
+
+        function onmousemove(event)
+        {
+
+        }
+
+        function update()
+        {
+            canvas.innerHTML = bottomstr+exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
             const lastselected = calculateSelectedCharacter()
 
-            const lastselectedindex = (lastselected[0]+lastselected[1]*(charsx+4))*4
+            const lastselectedindex = (lastselected[0]+lastselected[1]*pixelsx)*4
 
             MouseX = event.clientX
             MouseY = event.clientY
 
             const currentselected = calculateSelectedCharacter()
 
-            const selectedindex = (currentselected[0]+currentselected[1]*(charsx+4))*4
+            const selectedindex = (currentselected[0]+currentselected[1]*pixelsx)*4
 
             if (lastselectedindex != selectedindex)
             {
                 if (LastSelectedValue == 0)
                     colorpixel(lastselectedindex, 0)
 
+                if (mousedown)
+                    colorpixel(selectedindex, 255)
                 LastSelectedValue = pixeldata[selectedindex]
                 colorpixel(selectedindex, 255)
 
-                canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
-                // str = str.substring(0, lastselectedindex) + "┼"+ str.substring(lastselectedindex + 1);
-                // str = str.substring(0, selectedindex) + "█"+ str.substring(selectedindex + 1);
+                
             }
-
-            // canvas.innerHTML = str
         }
 
-        document.body.onmousemove = mousemove
+        body.onkeydown = function(event)
+        {
+            const key = event.key
+        }
+
+
+        canvas.style.whiteSpace = "pre"
+        body.onmousemove = mousemove
 
 
     </script>
