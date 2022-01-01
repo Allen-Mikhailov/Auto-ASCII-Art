@@ -51,9 +51,34 @@
         //[0, 0, 1, 0] <= [[0, 0][1, 0]]
         var brushdata = [-1, 1, -1, 0, -1, -1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
 
+        const YCompression = charheight/charwidth
+
+        //Radius
+        var BrushSize = 10
+
+        function UpdateBrush()
+        {
+            brushdata = []
+            for (var x = -BrushSize; x <= BrushSize; x++)
+            {
+                for (var y = -BrushSize; y <= BrushSize; y++)
+                {
+                    if (Math.sqrt(x*x+(y)*(y)) <= BrushSize)
+                    {
+                        brushdata.push(x)
+                        brushdata.push(Math.floor(y/YCompression))
+                    }
+                }
+            }
+            console.log(brushdata)
+        }
+
+        UpdateBrush()
+
         //Rendering 
 
         const localstorage = window.localStorage
+        localstorage.clear()
 
         var pixeldata = localstorage.getItem("PixelData")
         if (pixeldata) {
@@ -72,7 +97,7 @@
         var HoveredPos = [0, 0]
 
         function getHoveredCharacter(x, y) {
-            return [Math.floor((x + charwidth / 2) / charwidth), Math.floor((y + sizerect.height / 2) / sizerect.height)]
+            return [Math.floor((x + charwidth / 2) / charwidth)+0, Math.floor((y + sizerect.height / 2) / sizerect.height)+0]
         }
 
         function getHoveredCharacterIndex(x, y) {
@@ -113,7 +138,7 @@
         }
 
         function isvalidpos(x, y) {
-            return x > 0 && x < pixelsx && y > 0 && y < pixelsy
+            return x >= 0 && x < pixelsx && y >= 0 && y < pixelsy
         }
 
         function refreshcursor(lastpos) {
@@ -146,6 +171,7 @@
 
         body.onmousedown = function () {
             mousedown = true
+            refreshcursor(HoveredPos)
         }
 
         body.onmouseup = function () {
