@@ -5,6 +5,8 @@ p.scalecheck {
     width: auto;
     white-space: nowrap;
     margin: 0px;
+    font-family: monospace;
+    user-select: none;
 }
 
 body {
