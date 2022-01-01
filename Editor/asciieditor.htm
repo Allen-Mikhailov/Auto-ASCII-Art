@@ -49,7 +49,7 @@
             return [x, pixelsy-1-y]
         }
 
-        var HoveredPos
+        var HoveredPos = [0, 0]
 
         function getHoveredCharacter(x, y) {
             return [Math.floor((x+charwidth/2)/charwidth), Math.floor((y+sizerect.height/2)/sizerect.height)]
@@ -84,57 +84,50 @@
 
         function onmousemove(event)
         {
-            const lastindex = getHoveredCharacter(MouseX, MouseY)
-
+            const lastpos = HoveredPos
+            const lastindex = getIndex(lastpos[0], lastpos[1])
+            
             MouseX = event.clientX
             MouseY = event.clientY
 
-            const currentindex = getHoveredCharacter(MouseX, MouseY)
+            HoveredPos = getHoveredCharacter(MouseX, MouseY)
 
-            if (lastindex != currentindex)
+            if (lastindex != getIndex(HoveredPos[0], HoveredPos[1]))
             {
-                refreshcursor(lastindex)
+                refreshcursor(lastpos)
             }
         }
 
-        function refreshcursor(lastindex)
+        function isvalidpos(x, y)
         {
-            const currentindex = getHoveredCharacter(MouseX, MouseY)
+            return x > 0 && x < pixelsx && y > 0 && y < pixelsy
+        }
+
+        function refreshcursor(lastpos)
+        {
             for (var i = 0; i < lasthoveredareavalue.length; i++)
             {
-                if (lasthoveredareavalue[i] == 0)
+                const bx = brushdata[i*2]
+                const by = brushdata[i*2+1]
+                if (lasthoveredareavalue[i] == 0 && isvalidpos(bx+lastpos[0], by+lastpos[1]))
                 {
-                    
+                    colorpixel(getIndex(bx+lastpos[0], by+lastpos[1])*4, 0)
                 }  
+
+                if (isvalidpos(bx+HoveredPos[0], by+HoveredPos[1]))
+                {
+                    const index = getIndex(bx+HoveredPos[0], by+HoveredPos[1])*4
+                    lasthoveredareavalue[i] = pixeldata[index]
+                    colorpixel(index, 255)
+                }
             }
+
+            update()
         }
 
         function update()
         {
-            canvas.innerHTML = bottomstr+exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
-            const lastselected = calculateSelectedCharacter()
-
-            const lastselectedindex = (lastselected[0]+lastselected[1]*pixelsx)*4
-
-            MouseX = event.clientX
-            MouseY = event.clientY
-
-            const currentselected = calculateSelectedCharacter()
-
-            const selectedindex = (currentselected[0]+currentselected[1]*pixelsx)*4
-
-            if (lastselectedindex != selectedindex)
-            {
-                if (LastSelectedValue == 0)
-                    colorpixel(lastselectedindex, 0)
-
-                if (mousedown)
-                    colorpixel(selectedindex, 255)
-                LastSelectedValue = pixeldata[selectedindex]
-                colorpixel(selectedindex, 255)
-
-                
-            }
+            canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
         }
 
         body.onmousedown = function()
@@ -153,7 +146,7 @@
         }
 
         canvas.style.whiteSpace = "pre"
-        body.onmousemove = mousemove
+        body.onmousemove = onmousemove
     </script>
 </body>
 
