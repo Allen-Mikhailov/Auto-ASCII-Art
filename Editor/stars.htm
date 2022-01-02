@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="editorstyle.css">
+    <script>
+        const exports = {}
+    </script>
+    <script src="../ImageConversion/RenderMode/black-white.js"></script>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <p id="canvas" class="scalecheck" style="font-size: 5px;">.</p>
+    <script>
+        //Saving
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        //Size management
+
+        const screenwidth = screen.width
+        const screenheight = screen.height
+
+        const canvas = document.getElementById("canvas")
+        const sizerect = canvas.getBoundingClientRect()
+
+        const charwidth = sizerect.width
+        const charheight = sizerect.height * 1.25
+
+        const charsx = Math.floor(screenwidth / charwidth)
+        const charsy = Math.floor(screenheight / charheight) - 1
+
+        const pixelsx = charsx + 1
+        const pixelsy = charsy + 1
+
+        const rendersize = [pixelsx, pixelsy, pixelsx, pixelsy]
+
+        const body = document.body
+
+        //0 is x, 1 is y, 2 is size
+        const star = [0, 0, 4]
+
+        function getstarpixels(size)
+        {
+            pixels = []
+            for (var x = -size; x <= size; x++) {
+                for (var y = -size; y <= size; y++) {
+                    if (Math.sqrt(x * x + y * y) <= size) {
+                        pixels.push(x)
+                        pixels.push(Math.round(y / YCompression))
+                    }
+                }
+            }
+        }
+
+        const pixeldata = []
+        const write = 255*5
+
+        function getpixel(x, y)
+        {
+            return (y*pixelsx+x)*4
+        }
+
+        function isvalid(x, y)
+        {
+            return x >= 0 
+        }
+
+        star[2] = getstarpixels(star[2])
+
+        function update() {
+            for (var i = 0; i < pixelsx*pixelsy*4; i++)
+                pixeldata[i] = 0
+
+            for (var i = 0; i < star[2]; i++)
+            {
+                
+            }
+
+            canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
+        }
+
+        canvas.style.whiteSpace = "pre"
+        body.onmousemove = onmousemove
+
+        update()
+    </script>
+</body>
+
+</html>

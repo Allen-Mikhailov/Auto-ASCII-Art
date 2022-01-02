@@ -62,12 +62,16 @@
             }
         }
 
+        var HoveredPos = [0, 0]
+        var BrushColor = 255
+        var OppositeColor = 0
+
         //Brush
         //First val is x second val is y
         //[0, 0, 1, 0] <= [[0, 0][1, 0]]
         var brushdata = [-1, 1, -1, 0, -1, -1, 0, 1, 0, 0, 0, -1, 1, 1, 1, 0, 1, -1]
 
-        const YCompression = charheight/charwidth
+        const YCompression = sizerect.height / charwidth
         var BrushSize = 10
 
         var mousedown = false
@@ -76,29 +80,42 @@
             lasthoveredareavalue[i] = 0
         }
 
-        function UpdateBrush()
-        {
+        function EraseBrushTrace() {
             for (var i = 0; i < lasthoveredareavalue.length; i++) {
                 const bx = brushdata[i * 2]
                 const by = brushdata[i * 2 + 1]
-                if (lasthoveredareavalue[i] == 0 && isvalidpos(bx + lastpos[0], by + lastpos[1])) {
-                    colorpixel(getIndex(bx + lastpos[0], by + lastpos[1]) * 4, 0)
+                if (lasthoveredareavalue[i] == OppositeColor && isvalidpos(bx + HoveredPos[0], by + HoveredPos[1])) {
+                    colorpixel(getIndex(bx + HoveredPos[0], by + HoveredPos[1]) * 4, OppositeColor)
                 }
+            }
+        }
+
+        function UpdateBrush(skipnormalize) {
+            if (!skipnormalize) {
+                EraseBrushTrace();
             }
 
             brushdata = []
-            for (var x = -BrushSize; x <= BrushSize; x++)
-            {
-                for (var y = -BrushSize; y <= BrushSize; y++)
-                {
-                    if (Math.sqrt(x*x+(y)*(y)) <= BrushSize)
-                    {
+            for (var x = -BrushSize; x <= BrushSize; x++) {
+                for (var y = -BrushSize; y <= BrushSize; y++) {
+                    if (Math.sqrt(x * x + y * y) <= BrushSize) {
                         brushdata.push(x)
-                        brushdata.push(Math.floor(y/YCompression))
+                        brushdata.push(Math.floor(y / YCompression))
                     }
                 }
             }
-            console.log(brushdata)
+
+            lasthoveredareavalue = []
+
+            for (var i = 0; i < brushdata.length / 2; i++) {
+                const bx = brushdata[i * 2]
+                const by = brushdata[i * 2 + 1]
+                if (isvalidpos(bx + HoveredPos[0], by + HoveredPos[1])) {
+                    const index = getIndex(bx + HoveredPos[0], by + HoveredPos[1]) * 4
+                    lasthoveredareavalue[i] = pixeldata[index]
+                    colorpixel(index, BrushColor)
+                }
+            }
         }
 
         UpdateBrush()
@@ -108,10 +125,8 @@
             return [x, pixelsy - 1 - y]
         }
 
-        var HoveredPos = [0, 0]
-
         function getHoveredCharacter(x, y) {
-            return [Math.floor((x + charwidth / 2) / charwidth)+0, Math.floor((y + sizerect.height / 2) / sizerect.height)+0]
+            return [Math.floor((x + charwidth / 2) / charwidth) + 0, Math.floor((y + sizerect.height / 2) / sizerect.height) + 0]
         }
 
         function getHoveredCharacterIndex(x, y) {
@@ -154,8 +169,8 @@
             for (var i = 0; i < lasthoveredareavalue.length; i++) {
                 const bx = brushdata[i * 2]
                 const by = brushdata[i * 2 + 1]
-                if (lasthoveredareavalue[i] == 0 && isvalidpos(bx + lastpos[0], by + lastpos[1])) {
-                    colorpixel(getIndex(bx + lastpos[0], by + lastpos[1]) * 4, 0)
+                if (lasthoveredareavalue[i] == OppositeColor && isvalidpos(bx + lastpos[0], by + lastpos[1])) {
+                    colorpixel(getIndex(bx + lastpos[0], by + lastpos[1]) * 4, OppositeColor)
                 }
             }
 
@@ -165,9 +180,9 @@
                 if (isvalidpos(bx + HoveredPos[0], by + HoveredPos[1])) {
                     const index = getIndex(bx + HoveredPos[0], by + HoveredPos[1]) * 4
                     if (mousedown)
-                        colorpixel(index, 255)
+                        colorpixel(index, BrushColor)
                     lasthoveredareavalue[i] = pixeldata[index]
-                    colorpixel(index, 255)
+                    colorpixel(index, BrushColor)
                 }
             }
 
@@ -187,7 +202,7 @@
             mousedown = false
         }
 
-        window.onbeforeunload = function(){
+        window.onbeforeunload = function () {
             localstorage.setItem("PixelData", JSON.stringify(pixeldata))
         }
 
@@ -195,10 +210,19 @@
             const key = event.key
 
             if (key == "s") {
+                //Getting rid of the brush
+                const currentbrushsize = BrushSize
+                BrushSize = -1
+                UpdateBrush()
+                refreshcursor();
                 download("image.txt", canvas.innerHTML.replaceAll("<br>", "\n"))
+
+                //Putting back the brush
+                BrushSize = currentbrushsize
+                UpdateBrush()
+                refreshcursor();
             } else if (key == "c") {
-                for (var i = 0; i < pixeldata.length; i++)
-                {
+                for (var i = 0; i < pixeldata.length; i++) {
                     pixeldata[i] = 0
                 }
                 localstorage.setItem("PixelData", JSON.stringify(pixeldata))
@@ -211,11 +235,25 @@
                 BrushSize--;
                 UpdateBrush();
                 refreshcursor();
+            } else if (key == "e") {
+                EraseBrushTrace();
+
+                if (BrushColor == 255) {
+                    OppositeColor = 255;
+                    BrushColor = 0;
+                } else {
+                    OppositeColor = 0;
+                    BrushColor = 255;
+                }
+                UpdateBrush(true);
+                refreshcursor()
             }
         }
 
         canvas.style.whiteSpace = "pre"
         body.onmousemove = onmousemove
+
+        update()
     </script>
 </body>
 
