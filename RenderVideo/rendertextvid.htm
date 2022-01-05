@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="editorstyle.css">
+    <title>Ascii Video Player</title>
+</head>
+<body>
+    <p id = "canvas" class = "scalecheck" style="font-size: 4px;"></p>
+    <script src="videodatatext.js"></script>
+    <script>
+        const frames = []
+        const charsx = videodata.width
+        const charsy = videodata.height
+
+        var canvas = document.getElementById('canvas');
+
+        for (var i = 0; i < videodata.FrameCount; i++)
+        {
+            frames[i] = videodata["Frame"+i].replaceAll("nl", "<br>")
+        }
+
+        var frame = 0
+
+        function render()
+        {
+            frame = (frame+1)%(videodata.FrameCount*4)
+            // if (frames[Math.floor(frame/4)])
+            canvas.innerHTML = frames[Math.floor(frame/4)]
+            requestAnimationFrame(render)
+        }
+
+        render()
+    </script>
+</body>
+</html>

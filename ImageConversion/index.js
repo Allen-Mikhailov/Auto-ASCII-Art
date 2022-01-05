@@ -17,7 +17,7 @@ function execute(pixels, owidth, oheight, args) {
     const width = newsize[0]
     const height = newsize[1]
 
-    return rendermode.function(newsize[2], settings, pixels, [owidth, oheight, width, height], args || {})
+    return rendermode.render(newsize[2], settings, pixels, [owidth, oheight, width, height], args || {})
 }
 
 function save(data) {
