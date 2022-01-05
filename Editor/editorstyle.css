@@ -3,7 +3,7 @@ p.scalecheck {
     /* visibility: hidden; */
     height: auto;
     width: auto;
-    white-space: nowrap;
+    white-space: pre;
     margin: 0px;
     font-family: monospace;
     user-select: none;
