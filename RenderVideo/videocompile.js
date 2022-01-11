@@ -1,37 +1,47 @@
 var sourcehtmFile = "./vendervid.htm"
 
-var inputFramesDir = "./Frames"
+var inputdirPath = "./Frames"
 var outputFilePath = "./gif.htm"
+
+const flags = require("../modules/flags")
+const consoletools = require("./../modules/consoletools")
 
 function converttopath(str)
 {
-    if (str.startsWith("C:"))
-        return strelse 
-    else if (str.startsWith("./"))
-        return str
+    if (str.startsWith("C:") || str.startsWith("."))
+        return str 
     else
         return "./"+str
 }
 
 //Arg handling
-for (var i = 2; i < process.argv.length; i++)
-{
-    const arg = process.argv[i]
-    const nextarg = process.argv[i+1] || ""
-    //Handling Flags
-
-    if (arg.startsWith("-")){
-        //Is Flag
-        if (arg == "-o")
+const flagdata = {
+    ["-o"]: {
+        NextArg: true,
+        funct: function(arg)
         {
-            outputFilePath = converttopath(nextarg)
-            i++
-        } else if (arg.startsWith("-s")) {
-            i++
-            if (nextarg == "canvas")
-                sourcehtmFile = "./rendervid.htm"
-            else if (nextarg = "text")
-                sourcehtmFile = "./rendertextvideo.htm"
+            outputFilePath = converttopath(arg)
+        }
+    },
+    ["-i"]: {
+        NextArg: true,
+        funct: function(arg)
+        {
+            inputdirPath = converttopath(arg)
+        }
+    },
+    ["-rm"]: {
+        NextArg: true,
+        funct: function(arg)
+        {
+            if (arg == "text")
+                sourcehtmFile = "./vendertextvid.htm"
+            else if (arg == "canvas")
+                sourcehtmFile = "./vendervid.htm"
+            else
+                consoletools.warn("\""+arg+"\" is not a valid render mode")
+
         }
     }
 }
+flags.HandleFlags(process.argv, flagdata)
