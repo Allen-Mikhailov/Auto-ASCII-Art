@@ -1,7 +1,7 @@
 {
     "inputtype": "folder.js",
     "executiontype": "basic.js",
-    "warptype": "maintain-aspect-ratio.js",
+    "warptype": "no-warp.js",
     "rendermode": "box-color.js",
 
     "inputfile/folder": "Frames"   ,

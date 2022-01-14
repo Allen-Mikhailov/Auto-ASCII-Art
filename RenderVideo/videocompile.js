@@ -1,10 +1,10 @@
-var sourcehtmFile = "./vendervid.htm"
+var sourcehtmFile = "./rendervid.htm"
 
-var inputdirPath = "./Frames"
+var inputdirPath = "../ImageConversion/output"
 var outputFilePath = "./gif.htm"
 
 const flags = require("../modules/flags")
-const consoletools = require("./../modules/consoletools")
+const fs = require("fs")
 
 function converttopath(str)
 {
@@ -35,13 +35,35 @@ const flagdata = {
         funct: function(arg)
         {
             if (arg == "text")
-                sourcehtmFile = "./vendertextvid.htm"
+                sourcehtmFile = "./rendertextvid.htm"
             else if (arg == "canvas")
-                sourcehtmFile = "./vendervid.htm"
+                sourcehtmFile = "./rendervid.htm"
             else
-                consoletools.warn("\""+arg+"\" is not a valid render mode")
+                warn("\""+arg+"\" is not a valid render mode")
 
         }
     }
 }
 flags.HandleFlags(process.argv, flagdata)
+
+const testframe = fs.readFileSync(inputdirPath+"/Frame0.png.txt").toString()
+const width = testframe.indexOf("\n")
+const height = testframe.split("\n").length-1
+
+// console.log(fs.readdirSync(inputdirPath))
+
+const saveobject = {}
+saveobject.FrameCount = fs.readdirSync(inputdirPath).length
+saveobject.width = width
+saveobject.height = height
+
+for (var i = 0; i < saveobject.FrameCount; i++)
+{
+    const str = fs.readFileSync(inputdirPath+"/Frame"+i+".png.txt").toString()
+    saveobject["Frame"+i] = str.replace(/\n/g, "nl")
+}
+
+var source = fs.readFileSync(sourcehtmFile).toString()
+const newsource = source.replace("<!--VideoData-->", "<script> videodata = "+JSON.stringify(saveobject)+"</script>")
+
+fs.writeFileSync(outputFilePath, newsource)

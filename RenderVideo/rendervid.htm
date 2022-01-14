@@ -8,7 +8,7 @@
 </head>
 <body>
     <canvas id = "canvas"></canvas>
-    <script src="videodata.js"></script>
+    <!--VideoData-->
     <script>
         const chartopixels = {
             " ": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
@@ -42,14 +42,14 @@
         for (var f = 0; f < videodata.FrameCount; f++)
         {
             const newarray = new Uint8ClampedArray((width * height)*4*9)
-            const frame = videodata["Frame"+f]
+            const frame = videodata["Frame"+f].replaceAll("nl", "")
 
             for (var y = 0; y < height; y++)
             {
                 const offset = y*width
                 for (var x = 0; x < width; x++)
                 {
-                    const pixels = chartopixels[frame.charAt(offset+x)]
+                    const pixels = chartopixels[frame.charAt(offset+x)] || chartopixels[" "]
 
                     colorpixel(newarray, y*3, x*3,   pixels[0][0])
                     colorpixel(newarray, y*3, x*3+1, pixels[0][1])
