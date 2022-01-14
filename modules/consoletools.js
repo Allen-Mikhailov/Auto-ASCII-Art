@@ -92,12 +92,6 @@ function style(s, color)
     return  '\x1b['+colorIndex+"m"+s+"\x1b[0m"
 }
 
-function warn(str)
-{
-    console.log(style(str, "yellow"))
-}
-
 exports.EditLine = EditLine
 exports.style = style;
-exports.warn = warn
 exports.Options = Options
