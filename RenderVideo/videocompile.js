@@ -1,7 +1,7 @@
 var sourcehtmFile = "./rendervid.htm"
 
 var inputdirPath = "../ImageConversion/output"
-var outputFilePath = "./gif.htm"
+var outputFilePath = "./output/gif.htm"
 
 const flags = require("../modules/flags")
 const fs = require("fs")
