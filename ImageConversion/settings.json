@@ -1,10 +1,10 @@
 {
     "inputtype": "folder.js",
     "executiontype": "basic.js",
-    "warptype": "no-warp.js",
+    "warptype": "maintain-aspect-ratio.js",
     "rendermode": "box-color.js",
 
-    "inputfile/folder": "Frames"   ,
+    "inputfile/folder": "input"   ,
     "outputfile/folder": "output" ,
 
     "colorthreshold": 0.015
