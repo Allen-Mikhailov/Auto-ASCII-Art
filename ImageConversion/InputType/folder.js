@@ -15,6 +15,7 @@ exports.function = function(settings, run, save)
                 return console.log(err.message)
 
             save(run(inputfile, settings, pixels.data, pixels.shape[0], pixels.shape[1]))
+            console.log("Finished: "+inputfile)
         })
     }
 }

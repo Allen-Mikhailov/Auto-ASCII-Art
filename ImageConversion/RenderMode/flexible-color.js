@@ -48,7 +48,7 @@ exports.render = function(pixelget, settings, data, size, args)
         for (var x = 0; x < width-1; x++)
         {
             const groups = [getpixel(x, y)]
-            str += blocktable["0"+groupColor(groups, getpixel(x+1, y))
+            str += blocktable[""+groupColor(groups, getpixel(x+1, y))
                 +groupColor(groups, getpixel(x, y-1))+groupColor(groups, getpixel(x+1, y-1))]
         }
         str += "\n"
