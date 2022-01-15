@@ -2,10 +2,10 @@
     "inputtype": "folder.js",
     "executiontype": "basic.js",
     "warptype": "maintain-aspect-ratio.js",
-    "rendermode": "box-color.js",
+    "rendermode": "flexible-color.js",
 
     "inputfile/folder": "input"   ,
     "outputfile/folder": "output" ,
 
-    "colorthreshold": 0.015
+    "colorthreshold": 0.1
 }

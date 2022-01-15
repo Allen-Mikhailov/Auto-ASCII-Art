@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="editorstyle.css">
+    <script>
+        const exports = {}
+    </script>
+    <script src="../ImageConversion/RenderMode/black-white.js"></script>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <p id="canvas" class="scalecheck" style="font-size: 5px;">.</p>
+    <script>
+        //Saving
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        //Size management
+
+        const screenwidth = screen.width
+        const screenheight = screen.height
+
+        const canvas = document.getElementById("canvas")
+        const sizerect = canvas.getBoundingClientRect()
+
+        const charwidth = sizerect.width
+        const charheight = sizerect.height * 1.25
+
+        const charsx = Math.floor(screenwidth / charwidth)
+        const charsy = Math.floor(screenheight / charheight) - 1
+
+        const pixelsx = charsx + 1
+        const pixelsy = charsy + 1
+
+        const rendersize = [pixelsx, pixelsy, pixelsx, pixelsy]
+
+        const body = document.body
+
+        //Storage
+        const localstorage = window.localStorage
+        localstorage.clear()
+
+        var pixeldata = localstorage.getItem("PixelData")
+        if (pixeldata) {
+            pixeldata = JSON.parse(pixeldata)
+        } else {
+            pixeldata = []
+            for (var i = 0; i < (pixelsx) * (pixelsy) * 4; i++) {
+                pixeldata[i] = 0
+            }
+        }
+
+        var HoveredPos = [0, 0]
+
+        const YCompression = sizerect.height / charwidth
+
+        var mousedown = false
+
+        //Pixel Functions
+        function pixelget(x, y) {
+            return [x, pixelsy - 1 - y]
+        }
+
+        function getHoveredCharacter(x, y) {
+            return [Math.floor((x + charwidth / 2) / charwidth) + 0, Math.floor((y + sizerect.height / 2) / sizerect.height) + 0]
+        }
+
+        function getHoveredCharacterIndex(x, y) {
+            return Math.floor((x + charwidth / 2) / charwidth) + Math.floor((y + sizerect.height / 2) / sizerect.height) * pixelsx
+        }
+
+        function getIndex(x, y) {
+            return y * pixelsx + x
+        }
+
+        function colorpixel(index, value) {
+            pixeldata[index] = value
+            pixeldata[index + 1] = value
+            pixeldata[index + 2] = value
+            pixeldata[index + 3] = value
+        }
+
+        //Rendering
+        function isvalidpos(x, y) {
+            return x >= 0 && x < pixelsx && y >= 0 && y < pixelsy
+        }
+
+        function refreshcursor(lastpos) {
+            
+
+            update()
+        }
+
+        function update() {
+            canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
+        }
+
+        body.onmousedown = function () {
+            mousedown = true
+
+        }
+
+        body.onmouseup = function () {
+            mousedown = false
+        }
+
+        canvas.style.whiteSpace = "pre"
+        body.onmousemove = onmousemove
+
+        update()
+    </script>
+</body>
+
+</html>
