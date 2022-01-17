@@ -13,20 +13,6 @@
 <body>
     <p id="canvas" class="scalecheck" style="font-size: 5px;">.</p>
     <script>
-        //Saving
-        function download(filename, text) {
-            var element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-            element.setAttribute('download', filename);
-
-            element.style.display = 'none';
-            document.body.appendChild(element);
-
-            element.click();
-
-            document.body.removeChild(element);
-        }
-
         //Size management
 
         const screenwidth = screen.width
@@ -48,18 +34,9 @@
 
         const body = document.body
 
-        //Storage
-        const localstorage = window.localStorage
-        localstorage.clear()
-
-        var pixeldata = localstorage.getItem("PixelData")
-        if (pixeldata) {
-            pixeldata = JSON.parse(pixeldata)
-        } else {
-            pixeldata = []
-            for (var i = 0; i < (pixelsx) * (pixelsy) * 4; i++) {
-                pixeldata[i] = 0
-            }
+        pixeldata = []
+        for (var i = 0; i < (pixelsx) * (pixelsy) * 4; i++) {
+            pixeldata[i] = 0
         }
 
         var HoveredPos = [0, 0]
@@ -97,14 +74,43 @@
             return x >= 0 && x < pixelsx && y >= 0 && y < pixelsy
         }
 
-        function refreshcursor(lastpos) {
-            
-
-            update()
-        }
-
         function update() {
             canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
+        }
+
+        function rendertriangle(p1, p2, p3)
+        {
+            const up = Math.max(p1[1], p2[1], p3[1])
+            const down = Math.min(p1[1], p2[1], p3[1])
+            const right = Math.max(p1[0], p2[0], p3[0])
+            const left = Math.in(p1[0], p2[0], p3[0])
+
+            //line is slope, yintercept
+            const slope1 = []
+
+            function inbounds(x, y)
+            {
+                return y <= up && y >= down && x <= right && x >= left
+            }
+
+            for (var x = 0; x < pixelsx; x++)
+            {
+                for (var y = 0; y < pixelsy; y++)
+                {
+                    if (!inbounds(x, y))
+                        return
+                    
+                    
+                }
+            }
+        }
+
+        function onmousemove(event) {
+
+            MouseX = event.clientX
+            MouseY = event.clientY
+
+            HoveredPos = getHoveredCharacter(MouseX, MouseY)
         }
 
         body.onmousedown = function () {

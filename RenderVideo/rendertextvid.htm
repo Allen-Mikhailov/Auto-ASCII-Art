@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="editorstyle.css">
+    <link rel="stylesheet" href="../editorstyle.css">
     <style></style>
     <title>Ascii Video Player</title>
 </head>
@@ -23,11 +23,26 @@
 
         var frame = 0
 
+        const speed = .5
+        var direction = 1
+
         function render()
         {
-            frame = (frame+1)%(videodata.FrameCount*4)
-            // if (frames[Math.floor(frame/4)])
-            canvas.innerHTML = frames[Math.floor(frame/4)]
+            frame = (frame+speed*direction)
+
+            if (Math.floor(frame) > frames.length-1)
+            {
+                frame = frames.length-1
+                direction *= -1
+            }
+
+            if (frame < 0)
+            {
+                frame = 0
+                direction *= -1
+            }
+
+            canvas.innerHTML = frames[Math.floor(frame)]
             requestAnimationFrame(render)
         }
 
