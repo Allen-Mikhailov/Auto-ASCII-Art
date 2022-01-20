@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <p id="canvas" class="scalecheck" style="font-size: 5px;">.</p>
+    <p id="canvas" class="scalecheck" style="font-size: 10px;">.</p>
     <script>
         //Size management
 
@@ -40,6 +40,7 @@
         }
 
         var HoveredPos = [0, 0]
+        var points = []
 
         const YCompression = sizerect.height / charwidth
 
@@ -62,11 +63,17 @@
             return y * pixelsx + x
         }
 
-        function colorpixel(index, value) {
-            pixeldata[index] = value
-            pixeldata[index + 1] = value
-            pixeldata[index + 2] = value
-            pixeldata[index + 3] = value
+        const rowsize = pixelsx * 4
+
+        function colorpixel(array, y, x, value) {
+            const newpos = pixelget(x, y)
+            x = newpos[0]
+            y = newpos[1]
+
+            array[y * rowsize + x * 4] = value
+            array[y * rowsize + x * 4 + 1] = value
+            array[y * rowsize + x * 4 + 2] = value
+            array[y * rowsize + x * 4 + 3] = 255
         }
 
         //Rendering
@@ -78,29 +85,56 @@
             canvas.innerHTML = exports.render(pixelget, null, pixeldata, rendersize).replaceAll("\n", "<br>")
         }
 
-        function rendertriangle(p1, p2, p3)
+        function area(x1, y1, x2, y2, x3, y3) {
+            return Math.abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
+        }
+
+        function rendercircle(position, radius)
         {
+            // position = pixelget(position[0], position[1])
+            for (var x = -radius; x <= radius; x++) {
+                for (var y = -radius; y <= radius; y++) {
+                    if (Math.sqrt(x * x + y * y) <= radius) {
+                        colorpixel(pixeldata, position[1]+Math.floor(y / YCompression), position[0]+x, 255)
+                    }
+                }
+            }
+        }
+
+        function rendertriangle(p1, p2, p3) {
             const up = Math.max(p1[1], p2[1], p3[1])
             const down = Math.min(p1[1], p2[1], p3[1])
             const right = Math.max(p1[0], p2[0], p3[0])
-            const left = Math.in(p1[0], p2[0], p3[0])
+            const left = Math.min(p1[0], p2[0], p3[0])
+
+            const x1 = p1[0]
+            const y1 = p1[1]
+
+            const x2 = p2[0]
+            const y2 = p2[1]
+
+            const x3 = p3[0]
+            const y3 = p3[1]
 
             //line is slope, yintercept
             const slope1 = []
 
-            function inbounds(x, y)
-            {
+            function inbounds(x, y) {
                 return y <= up && y >= down && x <= right && x >= left
             }
 
-            for (var x = 0; x < pixelsx; x++)
-            {
-                for (var y = 0; y < pixelsy; y++)
-                {
+            for (var x = 0; x < pixelsx; x++) {
+                for (var y = 0; y < pixelsy; y++) {
                     if (!inbounds(x, y))
-                        return
-                    
-                    
+                        continue
+
+                    let A = area(x1, y1, x2, y2, x3, y3);
+                    let A1 = area(x, y, x2, y2, x3, y3);
+                    let A2 = area(x1, y1, x, y, x3, y3);
+                    let A3 = area(x1, y1, x2, y2, x, y);
+
+                    if (Math.abs(A - (A1 + A2 + A3)) < 1) 
+                        colorpixel(pixeldata, y, x, 255)
                 }
             }
         }
@@ -113,9 +147,19 @@
             HoveredPos = getHoveredCharacter(MouseX, MouseY)
         }
 
+        var point = 0
         body.onmousedown = function () {
             mousedown = true
+            points[point] = HoveredPos[0]
+            points[point+1] = HoveredPos[1]
 
+            point = (point+2)%6
+
+            if (points.length == 6) {
+                rendertriangle([points[0], points[1]], [points[2], points[3]], [points[4], points[5]])
+                console.log("Update")
+                update()
+            }
         }
 
         body.onmouseup = function () {
@@ -124,6 +168,23 @@
 
         canvas.style.whiteSpace = "pre"
         body.onmousemove = onmousemove
+
+        const heartheight = 100/YCompression
+        const heartwidth = 100
+
+        const center = [Math.floor(pixelsx/2), Math.floor(pixelsy/2)]
+
+        const circleradius = Math.floor(heartwidth/4)
+        const heightoffset = Math.floor(heartheight/2)
+        const toppointy = center[1]+heightoffset-circleradius
+
+        const bottompoint = [center[0], Math.floor(center[1]-heightoffset)]
+        const leftpoint = [center[0]-Math.floor(heartwidth/2), toppointy]
+        const rightpoint = [center[0]+Math.floor(heartwidth/2), toppointy]
+
+        rendertriangle(bottompoint, leftpoint, rightpoint)
+        rendercircle([center[0]-circleradius, toppointy], circleradius)
+        rendercircle([center[0]+circleradius, toppointy], circleradius)
 
         update()
     </script>
