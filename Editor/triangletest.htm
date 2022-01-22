@@ -93,7 +93,7 @@
         {
             // position = pixelget(position[0], position[1])
             for (var x = -radius; x <= radius; x++) {
-                for (var y = -radius; y <= radius; y++) {
+                for (var y = 0; y <= radius; y++) {
                     if (Math.sqrt(x * x + y * y) <= radius) {
                         colorpixel(pixeldata, position[1]+Math.floor(y / YCompression), position[0]+x, 255)
                     }
@@ -145,6 +145,7 @@
             MouseY = event.clientY
 
             HoveredPos = getHoveredCharacter(MouseX, MouseY)
+            HoveredPos = pixelget(HoveredPos[0], HoveredPos[1])
         }
 
         var point = 0
