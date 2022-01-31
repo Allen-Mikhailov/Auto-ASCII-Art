@@ -11,6 +11,11 @@ for (var i = 0; i < FrameSizeX * FrameSizeY * 3; i++) {
     ImageData[i] = 0
 }
 
+function clamp(val , min, max)
+{
+    return Math.max(Math.min(val, max), min)
+}
+
 function pixelget(x, y) {
     return [x, pixelsy - 1 - y]
 }
@@ -61,9 +66,9 @@ function GetCircleWithLine(size, position, angle) {
 
 }
 
-function DrawSprite(CanvasFrame, SpriteFrame)
+function DrawSprite(CanvasFrame, SpriteFrame, posx, posy)
 {
-    
+    // for (var x = clamp())
 }
 
 const FrameData = []
