@@ -1,3 +1,4 @@
+const fs = require("fs")
 const RenderMode = require("../ImageConversion/RenderMode/black-white")
 
 const FrameSizeX = 500
@@ -68,7 +69,19 @@ function GetCircleWithLine(size, position, angle) {
 
 function DrawSprite(CanvasFrame, SpriteFrame, posx, posy)
 {
-    // for (var x = clamp())
+    const xstart = clamp(posx, 0, CanvasFrame.sizex)-posx
+    const xend = clamp(posx+SpriteFrame.sizex, 0, CanvasFrame.sizex)-posx
+
+    const ystart = clamp(posy, 0, CanvasFrame.sizey)-posy
+    const yend = clamp(posy+SpriteFrame.sizey, 0, CanvasFrame.sizey)-posy
+
+    for (var x = xstart; x < xend; x++)
+    {
+        for (var y = ystart; y < yend; y++)
+        {
+            
+        }
+    }
 }
 
 const FrameData = []
