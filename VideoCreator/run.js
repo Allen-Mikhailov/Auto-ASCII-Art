@@ -1,4 +1,5 @@
 const fs = require("fs")
+const { json } = require("stream/consumers")
 const RenderMode = require("../ImageConversion/RenderMode/black-white")
 
 const FrameSizeX = 500
@@ -99,8 +100,10 @@ for (var i = 0; i < sizex; i++)
 for (var i = 0; i < Frames; i++) {
     for (var i = 0; i < sizex*sizey; i++)
     {
-        ImageData[i] = 0;
+        MainFrame.data[i] = 0;
     }
 
-    DrawSprite(ImageData)
+    DrawSprite(MainFrame, maskFrame)
 }
+
+fs.writeFileSync("video.js", "videodata = "+JSON.stringify(FrameData))
