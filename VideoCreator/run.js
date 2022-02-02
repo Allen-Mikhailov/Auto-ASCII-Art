@@ -5,13 +5,6 @@ const FrameSizeX = 500
 const FrameSizeY = 500
 const Frames = 100
 
-const ImageData = []
-
-//Filling Image Data
-for (var i = 0; i < FrameSizeX * FrameSizeY * 3; i++) {
-    ImageData[i] = 0
-}
-
 function clamp(val , min, max)
 {
     return Math.max(Math.min(val, max), min)
@@ -58,7 +51,7 @@ function GetTriangleBase(x1, y1, x2, y2, x3, y3) {
             let A3 = area(x1, y1, x2, y2, x, y);
 
             if (Math.abs(A - (A1 + A2 + A3)) < 1)
-            frame.data[y*sizex+x]
+                frame.data[y*sizex+x] = 1
         }
     }
 }
@@ -79,13 +72,35 @@ function DrawSprite(CanvasFrame, SpriteFrame, posx, posy)
     {
         for (var y = ystart; y < yend; y++)
         {
-            
+            CanvasFrame.data[(y+posy)*CanvasFrame.sizex+x+posx] = SpriteFrame.data[y*SpriteFrame.sizex + x]
         }
     }
 }
 
 const FrameData = []
+const MainFrame = CreateFrame(sizex, sizey)
+
+//Creating Mask
+const maskFrame = CreateFrame(sizex, sizey)
+const heightcap = 10/2
+const warpstrength = .02
+const wavespeed = .5
+var x = 0
+for (var i = 0; i < sizex; i++)
+{
+    x += wavespeed + (Math.random()-.5)*2*warpstrength 
+    height = (sizey-1)-Math.floor((Math.sin(x)+1)*heightcap)
+    for (var y = sizey-1; y < height; y++)
+    {
+        maskFrame.data[y*sizex+i] = 1
+    }
+}
 
 for (var i = 0; i < Frames; i++) {
+    for (var i = 0; i < sizex*sizey; i++)
+    {
+        ImageData[i] = 0;
+    }
 
+    DrawSprite(ImageData)
 }
