@@ -90,7 +90,7 @@ var x = 0
 for (var i = 0; i < Fsizex; i++)
 {
     x += wavespeed + (Math.random()-.5)*2*warpstrength 
-    height = noise(i/100, 0, 0)//(Fsizey-1)-Math.floor((Math.sin(x)+1)*heightcap)
+    height = (Fsizey-1)-Math.floor(noise(i*wavespeed, 0, 0)*heightcap)
     for (var y = height; y < Fsizey; y++)
     {
         maskFrame.data[y*Fsizex+i] = 1
