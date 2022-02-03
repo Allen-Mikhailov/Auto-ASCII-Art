@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./video.js"></script>
+    <title>Ascii Video Player</title>
+</head>
+<body>
+    <canvas id = "canvas"></canvas>
+    <script>
+
+        const frames = []
+        const width = videodata[0].sizex
+        const height = videodata[0].sizey
+
+        // console.log(videodata[0].width)
+
+        function colorpixel(array, index, value)
+        {
+            array[index*4] = value
+            array[index*4+1] = value
+            array[index*4+2] = value
+            array[index*4+3] = 255
+        }
+
+        for (var f = 0; f < videodata.length; f++)
+        {
+            const newarray = new Uint8ClampedArray((width * height)*4)
+            const frame = videodata[f]
+
+            for (var i = 0; i < width*height; i++)
+            {
+                colorpixel(newarray, i, frame.data[i]*255)
+            }
+
+            const nf = f
+
+            createImageBitmap(new ImageData(newarray, width, height)).then(function(data)
+            {
+                frames[nf] = data
+            })
+
+            console.log("Compiled Frame: "+f)
+        }
+
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        canvas.width = width
+        canvas.height = height
+
+        var frame = 0
+
+        function render()
+        {
+            frame = (frame+1)%(videodata.length*4)
+            if (frames[Math.floor(frame/4)])
+                ctx.drawImage(frames[Math.floor(frame/4)], 0, 0)
+            requestAnimationFrame(render)
+        }
+
+        render()
+    </script>
+</body>
+</html>
