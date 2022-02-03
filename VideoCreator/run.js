@@ -1,9 +1,9 @@
 const fs = require("fs")
-const { json } = require("stream/consumers")
-const RenderMode = require("../ImageConversion/RenderMode/black-white")
+const noise = require("./noise").noise
+const RenderMode = require("../ImageConversion/RenderMode/black-white.js")
 
-const FrameSizeX = 500
-const FrameSizeY = 500
+const Fsizex = 500
+const Fsizey = 500
 const Frames = 100
 
 function clamp(val , min, max)
@@ -23,7 +23,7 @@ function CreateFrame(sizex, sizey)
         data[i] = 0;
     }
     return {
-        pixels: data,
+        data: data,
         sizex: sizex,
         sizey: sizey
     };
@@ -79,31 +79,33 @@ function DrawSprite(CanvasFrame, SpriteFrame, posx, posy)
 }
 
 const FrameData = []
-const MainFrame = CreateFrame(sizex, sizey)
+const MainFrame = CreateFrame(Fsizex, Fsizey)
 
 //Creating Mask
-const maskFrame = CreateFrame(sizex, sizey)
-const heightcap = 10/2
-const warpstrength = .02
-const wavespeed = .5
+const maskFrame = CreateFrame(Fsizex, Fsizey)
+const heightcap = 100/2
+const warpstrength = .05
+const wavespeed = .03
 var x = 0
-for (var i = 0; i < sizex; i++)
+for (var i = 0; i < Fsizex; i++)
 {
     x += wavespeed + (Math.random()-.5)*2*warpstrength 
-    height = (sizey-1)-Math.floor((Math.sin(x)+1)*heightcap)
-    for (var y = sizey-1; y < height; y++)
+    height = noise(i/100, 0, 0)//(Fsizey-1)-Math.floor((Math.sin(x)+1)*heightcap)
+    for (var y = height; y < Fsizey; y++)
     {
-        maskFrame.data[y*sizex+i] = 1
+        maskFrame.data[y*Fsizex+i] = 1
     }
 }
 
 for (var i = 0; i < Frames; i++) {
-    for (var i = 0; i < sizex*sizey; i++)
+    for (var j = 0; j < Fsizex*Fsizey; j++)
     {
-        MainFrame.data[i] = 0;
+        MainFrame.data[j] = 0;
     }
 
-    DrawSprite(MainFrame, maskFrame)
+    DrawSprite(MainFrame, maskFrame, 0, 0)
+
+    FrameData[i] = Object.assign({}, MainFrame)
 }
 
 fs.writeFileSync("video.js", "videodata = "+JSON.stringify(FrameData))
