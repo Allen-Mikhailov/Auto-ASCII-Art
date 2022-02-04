@@ -118,7 +118,7 @@ const HeadRadius = 50
 const TailLength = 100
 const TailWidth = Math.sqrt((TailLength**2)/2)
 const MeteorFrame = GetTriangleBase(0, TailWidth, HeadRadius, TailWidth+HeadRadius, HeadRadius+TailWidth, 0)
-DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 0), -HeadRadius, 1)
+DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius/2, 0), 0, 60)
 
 for (var i = 0; i < Frames; i++) {
     for (var j = 0; j < Fsizex*Fsizey; j++)
