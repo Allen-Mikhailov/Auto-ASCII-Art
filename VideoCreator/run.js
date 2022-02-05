@@ -11,9 +11,6 @@ function clamp(val , min, max)
     return Math.max(Math.min(val, max), min)
 }
 
-function pixelget(x, y) {
-    return [x, pixelsy - 1 - y]
-}
 
 function CreateFrame(sizex, sizey)
 {
@@ -33,25 +30,25 @@ function area(x1, y1, x2, y2, x3, y3) {
     return Math.abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
 }
 
-function GetTriangleBase(x1, y1, x2, y2, x3, y3) {
-    const up = Math.max(y1, y2, y3);
-    const down = Math.min(y1, y2, y3);
-    const right = Math.max(x1, x2, x3);
-    const left = Math.min(x1, x2, x3);
+function DrawTraingle(frame, x1, y1, x2, y2, x3, y3) {
+    const up = Math.ceil(Math.max(y1, y2, y3));
+    const down = Math.floor(Math.min(y1, y2, y3));
+    const right = Math.ceil(Math.max(x1, x2, x3));
+    const left = Math.floor(Math.min(x1, x2, x3));
 
-    const sizex = right-left
-    const sizey = up-down
+    const sizex = frame.sizex
 
-    const frame = CreateFrame(sizex, sizey)
+    console.log(x1, y1, x2, y2, x3, y3)
 
-    for (var x = 0; x < sizex; x++) {
-        for (var y = 0; y < sizey; y++) {
+    for (var x = left; x < right; x++) {
+        for (var y = down; y < up; y++) {
             let A = area(x1, y1, x2, y2, x3, y3);
             let A1 = area(x, y, x2, y2, x3, y3);
             let A2 = area(x1, y1, x, y, x3, y3);
             let A3 = area(x1, y1, x2, y2, x, y);
 
             if (Math.abs(A - (A1 + A2 + A3)) < 1)
+                // console.log("Draw")
                 frame.data[y*sizex+x] = 1
         }
     }
@@ -66,7 +63,7 @@ function GetCircleWithLine(radius, angle) {
         const offset = y*Frame.sizex
         for (var x = 0; x < radius*2+1; x++)
         {
-            if (Math.sqrt((x-radius)**2 + (y-radius)**2) <= radius && (x-radius)*angle <= y)
+            if (Math.sqrt((x-radius)**2 + (y-radius)**2) <= radius && (x-radius)*angle <= y-radius)
             {
                 Frame.data[offset+x] = 1 
             }
@@ -91,7 +88,8 @@ function DrawSprite(CanvasFrame, SpriteFrame, posx, posy)
     {
         for (var y = ystart; y < yend; y++)
         {
-            CData[(y+posy)*CanvasFrame.sizex+x+posx] = SData[y*SpriteFrame.sizex + x] || CData[(y+posy)*CanvasFrame.sizex+x+posx]
+            CData[(y+posy)*CanvasFrame.sizex+x+posx] = SData[y*SpriteFrame.sizex + x] 
+            || CData[(y+posy)*CanvasFrame.sizex+x+posx]
         }
     }
 }
@@ -114,11 +112,16 @@ for (var i = 0; i < Fsizex; i++)
 }
 
 //Meteor Sprite
-const HeadRadius = 50
-const TailLength = 100
-const TailWidth = (Math.sqrt(5*(HeadRadius**2))+TailLength)/(Math.sqrt(2))
-const MeteorFrame = GetTriangleBase(0, TailWidth-HeadRadius*2, HeadRadius*2, TailWidth, TailWidth, 0)
-DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 0), 0, 50)
+const HeadRadius = 10
+const TailLength = 60
+const BoxHeight = Math.ceil((TailLength+HeadRadius*Math.sqrt(2))/Math.sqrt(2))
+
+const MeteorFrame = CreateFrame(BoxHeight, BoxHeight)
+DrawTraingle(MeteorFrame, 
+    HeadRadius+Math.cos(3/4*Math.PI)*HeadRadius, BoxHeight-HeadRadius-Math.sin(3/4*Math.PI)*HeadRadius,
+    HeadRadius+Math.cos(7/4*Math.PI)*HeadRadius, BoxHeight-HeadRadius-Math.sin(7/4*Math.PI)*HeadRadius,
+    BoxHeight, 0)
+DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 1), 0, BoxHeight-HeadRadius*2)
 
 for (var i = 0; i < Frames; i++) {
     for (var j = 0; j < Fsizex*Fsizey; j++)
