@@ -2,6 +2,11 @@ const fs = require("fs")
 const noise = require("./noise").noise
 const RenderMode = require("../ImageConversion/RenderMode/black-white.js")
 
+const sin = Math.sin
+const cos = Math.cos
+const sqrt = Math.sqrt
+const PI = Math.PI
+
 const Fsizex = 500
 const Fsizey = 500
 const Frames = 100
@@ -114,14 +119,21 @@ for (var i = 0; i < Fsizex; i++)
 //Meteor Sprite
 const HeadRadius = 10
 const TailLength = 60
-const BoxHeight = Math.ceil((TailLength+HeadRadius*Math.sqrt(2))/Math.sqrt(2))
+const BoxHeight = Math.ceil((TailLength+HeadRadius*sqrt(2))/sqrt(2))
 
 const MeteorFrame = CreateFrame(BoxHeight, BoxHeight)
 DrawTraingle(MeteorFrame, 
-    HeadRadius+Math.cos(3/4*Math.PI)*HeadRadius, BoxHeight-HeadRadius-Math.sin(3/4*Math.PI)*HeadRadius,
-    HeadRadius+Math.cos(7/4*Math.PI)*HeadRadius, BoxHeight-HeadRadius-Math.sin(7/4*Math.PI)*HeadRadius,
+    HeadRadius+cos(3/4*PI)*HeadRadius, BoxHeight-HeadRadius-sin(3/4*Math.PI)*HeadRadius,
+    HeadRadius+cos(7/4*PI)*HeadRadius, BoxHeight-HeadRadius-sin(7/4*Math.PI)*HeadRadius,
     BoxHeight, 0)
 DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 1), 0, BoxHeight-HeadRadius*2)
+
+const Meteors = []
+const MeteorCount = Frames*10
+const MeteorFallAngle = 5/4*PI
+const MeteorSpeed = 5
+const MeteorsLifeTime = MainFrame.sizey/(sin(MeteorFallAngle)*MeteorSpeed)
+const StartingMeteors = MeteorCount/MeteorsLifeTime
 
 for (var i = 0; i < Frames; i++) {
     for (var j = 0; j < Fsizex*Fsizey; j++)
