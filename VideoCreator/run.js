@@ -2,6 +2,7 @@ const fs = require("fs")
 const noise = require("./noise").noise
 const RenderMode = require("../ImageConversion/RenderMode/black-white.js")
 
+const floor = Math.floor
 const sin = Math.sin
 const cos = Math.cos
 const sqrt = Math.sqrt
@@ -42,8 +43,6 @@ function DrawTraingle(frame, x1, y1, x2, y2, x3, y3) {
     const left = Math.floor(Math.min(x1, x2, x3));
 
     const sizex = frame.sizex
-
-    console.log(x1, y1, x2, y2, x3, y3)
 
     for (var x = left; x < right; x++) {
         for (var y = down; y < up; y++) {
@@ -128,12 +127,27 @@ DrawTraingle(MeteorFrame,
     BoxHeight, 0)
 DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 1), 0, BoxHeight-HeadRadius*2)
 
-const Meteors = []
-const MeteorCount = Frames*10
 const MeteorFallAngle = 5/4*PI
-const MeteorSpeed = 5
-const MeteorsLifeTime = MainFrame.sizey/(sin(MeteorFallAngle)*MeteorSpeed)
-const StartingMeteors = MeteorCount/MeteorsLifeTime
+const MeteorSpeed = 10
+const MeteorFallSpeed = -sin(MeteorFallAngle)*MeteorSpeed
+const MeteorsLifeTime = MainFrame.sizey/MeteorFallSpeed
+const MeteorCycles = 1
+
+const Loops = Math.floor(Frames/MeteorsLifeTime)
+const TotalSpacingFrames = Frames-(Loops*MeteorsLifeTime)
+const SpacingFrames = Math.floor(TotalSpacingFrames/Loops)
+const StartingY = 0//-MeteorSpeed*SpacingFrames
+const CycleLength = (Math.floor(MeteorsLifeTime)+SpacingFrames)
+
+function GetMeteorPos(Frame, MeteorId)
+{
+    Frame = (Frame+MeteorId)%Frames
+
+    const CurrentLoop = Math.floor(Frame/CycleLength)
+    const LoopOffset = Frame-CurrentLoop*CycleLength
+
+    return [Fsizex/2+(CurrentLoop*MeteorId**77)%(Fsizex/2), StartingY+LoopOffset*MeteorFallSpeed]
+}
 
 for (var i = 0; i < Frames; i++) {
     for (var j = 0; j < Fsizex*Fsizey; j++)
@@ -141,8 +155,13 @@ for (var i = 0; i < Frames; i++) {
         MainFrame.data[j] = 0;
     }
 
-    DrawSprite(MainFrame, MeteorFrame, 0, i)
-    // DrawSprite(MainFrame, maskFrame, 0, 0)
+    for (var m = 0; m < MeteorCycles; m++)
+    {
+        const pos = GetMeteorPos(i, m)
+        console.log(pos)
+        DrawSprite(MainFrame, MeteorFrame, pos[0], Math.floor(pos[1]))
+    }
+    DrawSprite(MainFrame, maskFrame, 0, 0)
 
     const FrameClone = {}
     FrameClone.sizex = MainFrame.sizex
