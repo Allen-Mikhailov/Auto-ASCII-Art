@@ -10,7 +10,7 @@ const PI = Math.PI
 
 const Fsizex = 500
 const Fsizey = 500
-const Frames = 100
+const Frames = 1000
 
 function clamp(val , min, max)
 {
@@ -130,6 +130,7 @@ DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 1), 0, BoxHeight-HeadRadiu
 const MeteorFallAngle = 5/4*PI
 const MeteorSpeed = 10
 const MeteorFallSpeed = -sin(MeteorFallAngle)*MeteorSpeed
+const MeteorSwaySpeed = cos(MeteorFallAngle)*MeteorSpeed
 const MeteorsLifeTime = MainFrame.sizey/MeteorFallSpeed
 const MeteorCycles = 1
 
@@ -146,7 +147,9 @@ function GetMeteorPos(Frame, MeteorId)
     const CurrentLoop = Math.floor(Frame/CycleLength)
     const LoopOffset = Frame-CurrentLoop*CycleLength
 
-    return [Fsizex/2+(CurrentLoop*MeteorId**77)%(Fsizex/2), StartingY+LoopOffset*MeteorFallSpeed]
+    const StartingX = Fsizex/2+(CurrentLoop*MeteorId**77)%(Fsizex/2)
+
+    return [StartingX+MeteorSwaySpeed*LoopOffset, StartingY+LoopOffset*MeteorFallSpeed]
 }
 
 for (var i = 0; i < Frames; i++) {
@@ -158,7 +161,6 @@ for (var i = 0; i < Frames; i++) {
     for (var m = 0; m < MeteorCycles; m++)
     {
         const pos = GetMeteorPos(i, m)
-        console.log(pos)
         DrawSprite(MainFrame, MeteorFrame, pos[0], Math.floor(pos[1]))
     }
     DrawSprite(MainFrame, maskFrame, 0, 0)
