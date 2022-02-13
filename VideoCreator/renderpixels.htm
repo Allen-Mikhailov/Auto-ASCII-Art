@@ -55,10 +55,11 @@
 
         function render()
         {
-            frame = (frame+1)%(videodata.length*4)
-            if (frames[Math.floor(frame/4)])
-                ctx.drawImage(frames[Math.floor(frame/4)], 0, 0)
+            frame = (frame+1)%(videodata.length)
+            if (frames[Math.floor(frame)])
+                ctx.drawImage(frames[Math.floor(frame)], 0, 0)
             requestAnimationFrame(render)
+            console.log(frame)
         }
 
         render()

@@ -10,7 +10,7 @@ const PI = Math.PI
 
 const Fsizex = 500
 const Fsizey = 500
-const Frames = 1000
+const Frames = 500
 
 function clamp(val , min, max)
 {
@@ -128,16 +128,16 @@ DrawTraingle(MeteorFrame,
 DrawSprite(MeteorFrame, GetCircleWithLine(HeadRadius, 1), 0, BoxHeight-HeadRadius*2)
 
 const MeteorFallAngle = 5/4*PI
-const MeteorSpeed = 10
+const MeteorSpeed = 5
 const MeteorFallSpeed = -sin(MeteorFallAngle)*MeteorSpeed
 const MeteorSwaySpeed = cos(MeteorFallAngle)*MeteorSpeed
 const MeteorsLifeTime = MainFrame.sizey/MeteorFallSpeed
-const MeteorCycles = 1
+const MeteorCycles = 100
 
 const Loops = Math.floor(Frames/MeteorsLifeTime)
 const TotalSpacingFrames = Frames-(Loops*MeteorsLifeTime)
 const SpacingFrames = Math.floor(TotalSpacingFrames/Loops)
-const StartingY = 0//-MeteorSpeed*SpacingFrames
+const StartingY = -MeteorSpeed*SpacingFrames
 const CycleLength = (Math.floor(MeteorsLifeTime)+SpacingFrames)
 
 function GetMeteorPos(Frame, MeteorId)
@@ -147,10 +147,14 @@ function GetMeteorPos(Frame, MeteorId)
     const CurrentLoop = Math.floor(Frame/CycleLength)
     const LoopOffset = Frame-CurrentLoop*CycleLength
 
-    const StartingX = Fsizex/2+(CurrentLoop*MeteorId**77)%(Fsizex/2)
+    const StartingX = Fsizex/2+((CurrentLoop+1)*MeteorId**77)%(Fsizex/2)
 
     return [StartingX+MeteorSwaySpeed*LoopOffset, StartingY+LoopOffset*MeteorFallSpeed]
 }
+
+const outputfilename = "video.js"
+const Stream = fs.createWriteStream(outputfilename)
+Stream.write("const videodata = [")
 
 for (var i = 0; i < Frames; i++) {
     for (var j = 0; j < Fsizex*Fsizey; j++)
@@ -161,17 +165,12 @@ for (var i = 0; i < Frames; i++) {
     for (var m = 0; m < MeteorCycles; m++)
     {
         const pos = GetMeteorPos(i, m)
-        DrawSprite(MainFrame, MeteorFrame, pos[0], Math.floor(pos[1]))
+        DrawSprite(MainFrame, MeteorFrame, floor(pos[0]), floor(pos[1]))
     }
     DrawSprite(MainFrame, maskFrame, 0, 0)
 
-    const FrameClone = {}
-    FrameClone.sizex = MainFrame.sizex
-    FrameClone.sizey = MainFrame.sizey
-    FrameClone.data = []
-    for (var k = 0; k < FrameClone.sizex*FrameClone.sizey; k++)
-        FrameClone.data[k] = MainFrame.data[k]
-    FrameData[i] = FrameClone
+    Stream.write(JSON.stringify(MainFrame)+",")
 }
 
-fs.writeFileSync("video.js", "videodata = "+JSON.stringify(FrameData))
+Stream.write("]")
+Stream.close()
