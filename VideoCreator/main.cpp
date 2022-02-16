@@ -2,11 +2,9 @@
 #include <fstream>
 #include <cmath>
 
-using namespace std;
-
 int clamp(int value, int minv, int maxv)
 {
-    return max(value, maxv);
+    return std::max(std::min(value, maxv), minv);
 }
 
 class Sprite {
@@ -15,16 +13,23 @@ class Sprite {
         int sizey;
         char* pixels;
 
-        void Draw(Sprite Sprite, int posx, int posy)
+        void Draw(Sprite _Sprite, int posx, int posy)
         {
-            char* sprite_pixels = Sprite.pixels;
+            char* sprite_pixels = _Sprite.pixels;
 
-            int startx = clamp(posx, 0, sizex)-posx
-            // const xstart = clamp(posx, 0, CanvasFrame.sizex)-posx
-            // const xend = clamp(posx+SpriteFrame.sizex, 0, CanvasFrame.sizex)-posx
+            int xstart = clamp(posx, 0, sizex)-posx;
+            int xend = clamp(posx+_Sprite.sizex, 0, sizex)-posx;
 
-            // const ystart = clamp(posy, 0, CanvasFrame.sizey)-posy
-            // const yend = clamp(posy+SpriteFrame.sizey, 0, CanvasFrame.sizey)-posy
+            int ystart = clamp(posy, 0, sizey)-posy;
+            int yend = clamp(posy+_Sprite.sizey, 0, sizey)-posy;
+
+            for (int x = xstart; x < xend; x++)
+            {
+                for (int y = ystart; y < yend; y++)
+                {
+                    pixels[(y+posy)*sizex+x+posx] = _Sprite.pixels[y*_Sprite.sizex + x] | pixels[(y+posy)*sizex+x+posx];
+                }
+            }
         }
 
         Sprite(int sx, int sy)
