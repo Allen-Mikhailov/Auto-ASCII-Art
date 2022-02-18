@@ -3,4 +3,5 @@ output/
 input/
 node_modules/
 temp/
+.vscode/
 video.js
