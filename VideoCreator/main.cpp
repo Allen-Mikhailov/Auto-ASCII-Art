@@ -1,5 +1,6 @@
-// #include <iostream>
+#include <iostream>
 #include <fstream>
+#include <cmath>
 #include "noise.hpp"
 #include "sprite.hpp"
 

@@ -1,5 +1,4 @@
 #include <cmath>
-#include <algorithm>
 
 using namespace std;
 
@@ -9,6 +8,17 @@ int clamp(int value, int minv, int maxv)
 {
     return max(min(value, maxv), minv);
 }
+
+int max(double a, double b, double c)
+{
+    return max(a, max(b, c));
+}
+
+int min(double a, double b, double c)
+{
+    return min(a, min(b, c));
+}
+
 #endif
 
 
