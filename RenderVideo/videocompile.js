@@ -46,20 +46,20 @@ const flagdata = {
 }
 flags.HandleFlags(process.argv, flagdata)
 
-const testframe = fs.readFileSync(inputdirPath+"/Anime Boy-8jipzf1k9938k6gg.jpg1.txt").toString()
+const testframe = fs.readFileSync(inputdirPath+"/Frame1.png.txt").toString()
 const width = testframe.indexOf("\n")
 const height = testframe.split("\n").length-1
 
 // console.log(fs.readdirSync(inputdirPath))
 
 const saveobject = {}
-saveobject.FrameCount = fs.readdirSync(inputdirPath).length
+saveobject.FrameCount = 300//fs.readdirSync(inputdirPath).length
 saveobject.width = width
 saveobject.height = height
 
 for (var i = 0; i < saveobject.FrameCount; i++)
 {
-    const str = fs.readFileSync(inputdirPath+"/Anime Boy-8jipzf1k9938k6gg.jpg"+i+".txt").toString()
+    const str = fs.readFileSync(inputdirPath+"/Frame"+i+".png.txt").toString()
     saveobject["Frame"+i] = str.replace(/\n/g, "nl")
 }
 
