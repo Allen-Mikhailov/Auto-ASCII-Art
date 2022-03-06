@@ -3,7 +3,7 @@ var getPixels = require("get-pixels")
 
 exports.function = function(settings, run, save)
 {
-    const dir = fs.readdirSync("./")
+    const dir = fs.readdirSync(basepath+"./")
     var inputfile
 
     for (var i = 0; i < dir.length; i++)
@@ -18,7 +18,7 @@ exports.function = function(settings, run, save)
     if (!inputfile)
         return console.log("Error: no file that starts with \""+settings["inputfile/folder"]+"\" was found")
 
-    getPixels("./"+inputfile, function(err, pixels)
+    getPixels(basepath+"./"+inputfile, function(err, pixels)
     {  
         if (err)
             return console.log(err.message)

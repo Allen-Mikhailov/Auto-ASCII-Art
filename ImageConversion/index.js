@@ -1,15 +1,17 @@
 const fs = require("fs")
 
-const settings = JSON.parse(fs.readFileSync("./settings.json"))
+const basepath = process.argv[1]+"/../"
 
-const inputtype = require("./InputType/" + settings.inputtype)
-const executiontype = require("./ExectutionType/" + settings.executiontype)
+const settings = JSON.parse(fs.readFileSync(basepath+"./settings.json"))
+
+const inputtype = require(basepath+"./InputType/" + settings.inputtype)
+const executiontype = require(basepath+"./ExectutionType/" + settings.executiontype)
 const warp = require("./WarpType/" + settings.warptype)
 const rendermode = require("./RenderMode/" + settings.rendermode)
 
-if (!fs.existsSync("./" + settings["outputfile/folder"]))
+if (!fs.existsSync(basepath+"./" + settings["outputfile/folder"]))
 {
-    fs.mkdirSync("./"+settings["outputfile/folder"])
+    fs.mkdirSync(basepath+"./"+settings["outputfile/folder"])
 }
 
 function execute(pixels, owidth, oheight, args) {
@@ -22,7 +24,7 @@ function execute(pixels, owidth, oheight, args) {
 
 function save(data) {
     for (const filename in data) {
-        fs.writeFileSync("./" + settings["outputfile/folder"] + "/" + filename + ".txt", data[filename])
+        fs.writeFileSync(basepath+"./" + settings["outputfile/folder"] + "/" + filename + ".txt", data[filename])
     }
 }
 
