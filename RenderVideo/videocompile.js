@@ -1,4 +1,4 @@
-var sourcehtmFile = "./rendervid.htm"
+var sourcehtmFile = "./rendertextvid.htm"
 
 var inputdirPath = "../ImageConversion/output"
 var outputFilePath = "./output/gif.htm"
@@ -53,13 +53,15 @@ const height = testframe.split("\n").length-1
 // console.log(fs.readdirSync(inputdirPath))
 
 const saveobject = {}
-saveobject.FrameCount = 300//fs.readdirSync(inputdirPath).length
+saveobject.FrameCount = 100//fs.readdirSync(inputdirPath).length
 saveobject.width = width
 saveobject.height = height
 
+const filestart = "Screenshot 2022-03-27 123241.png"
+
 for (var i = 0; i < saveobject.FrameCount; i++)
 {
-    const str = fs.readFileSync(inputdirPath+"/Frame"+i+".png.txt").toString()
+    const str = fs.readFileSync(inputdirPath+"/"+filestart+i+".txt").toString()
     saveobject["Frame"+i] = str.replace(/\n/g, "nl")
 }
 

@@ -1,10 +1,10 @@
 {
     "inputtype": "folder.js",
-    "executiontype": "basic.js",
-    "warptype": "div-3.js",
+    "executiontype": "flush.js",
+    "warptype": "maintain-aspect-ratio.js",
     "rendermode": "flexible-color.js",
 
-    "inputfile/folder": "Frames"   ,
+    "inputfile/folder": "./input",
     "outputfile/folder": "output" ,
 
     "colorthreshold": 0.1
