@@ -27,3 +27,4 @@ class branch
     }
 }
 
+export default branch

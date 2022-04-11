@@ -1,8 +1,5 @@
-const args = process.argv
+const tree = require("./UniversalModules/settingtree.js")
 
-function SettingTree(tree, setting, value)
-{
-    // for (var i = 0; i < tree.length; i++)
-}
+const args = process.argv
 
 //Arg Template
