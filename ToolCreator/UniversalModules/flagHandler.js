@@ -28,8 +28,9 @@ class commandObj
         this.prefixes = {}
     }
 
-    prefixError(flag1, flag2, flagtype) {
-        
+    prefixError(flag, flagtype) {
+        console.warn("WARNING: Prefix collision in command \""+this.name+"\"\n"+
+            "with prefix \""+flag[flagtype]+"\" with commands +\""+flag.name+"\" and \""+this.prefixes[flag[flagtype]].name+"\"")
     }
 
     addFlag(flag)
@@ -37,8 +38,11 @@ class commandObj
         this.flags.push(flag)
 
         if (this.prefixes[flag.ppf])
-            throw new TypeError("Prefix collision in command \""+this.name+"\"\n"+
-            "with prefix \""+flag.ppf+"\" with commands +\""+flag.name+"\" and \""+this.prefixes[flag.ppf].name+"\"")
+            prefixError(flag, "ppf")
+
+        if (this.prefixes[flag.spf])
+            prefixError(flag, "spf")
+
         this.prefixes[flag.ppf] = flag
         this.prefixes[flag.spf] = flag
     }
@@ -48,11 +52,36 @@ class commandLineObj
 {
     commandLineObj()
     {
-        commands = {}
+        commands = []
+        calls = {}
+    }
+
+    commandPrefixError(command, prefixtype)
+    {
+        console.warn("WARNING: Prefix collision in command \""+this.name+"\"\n"+
+                "with prefix \""+command[prefixtype]+"\" with commands +\""+command.name
+                +"\" and \""+this.calls[command[prefixtype]].name+"\"")
+    }
+
+    addCommand(command)
+    {
+        this.commands.push(command)
+
+        if (this.calls[command.pname])
+            commandPrefixError(command, "pname")
+
+        if (this.calls[command.sname])
+            commandPrefixError(command, "sname")
+
+        this.calls[command.pname] = command
+        this.calls[command.sname] = command
+
+        return this
     }
 }
 
-function HandlerFlags(command, str, yell)
+function HandlerFlags(commandLine, str, yell)
 {
-
+    const args = str.split(" ")
+    const command = args[0]
 }
