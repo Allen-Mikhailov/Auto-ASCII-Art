@@ -15,7 +15,7 @@ class flagObj
 
 class commandObj
 {
-    commandObj(name, call, primaryname, secondaryname) {
+    commandObj(name, call, primaryname, secondaryname, args) {
         if (!(name && call && primaryname))
             throw new TypeError("Invalid args for command creation!")
 
@@ -23,6 +23,7 @@ class commandObj
         this.call = call
         this.pname = primaryname
         this.sname = secondaryname
+        this.args = args || 0
 
         this.flags = []
         this.prefixes = {}
@@ -78,6 +79,34 @@ class commandLineObj
 
         return this
     }
+}
+
+function createFlagError()
+{
+
+}
+
+function rawFlags(command, args)
+{
+    var err
+    for (var i = 0; i < args.length; i++)
+    {
+        const prefix = args[i]
+        const flag = command.calls[prefix]
+
+        if (flag == undefined)
+        {
+            error
+            break
+        }
+
+        // for (var k = 0; k < ; k++)
+        // {
+
+        // }
+    }
+
+    return err == undefined, err
 }
 
 function HandlerFlags(commandLine, str, yell)
