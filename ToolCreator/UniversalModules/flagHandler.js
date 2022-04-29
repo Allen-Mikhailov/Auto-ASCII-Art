@@ -100,10 +100,11 @@ function rawFlags(command, args)
             break
         }
 
-        // for (var k = 0; k < ; k++)
-        // {
-
-        // }
+        for (var k = 0; k < flag.args; k++)
+        {
+            
+        }
+        i += flag.args
     }
 
     return err == undefined, err
