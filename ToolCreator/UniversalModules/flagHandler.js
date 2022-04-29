@@ -1,6 +1,6 @@
 class flagObj
 {
-    flagObj(name, call, primaryprefix, secondaryprefix,  description) 
+    flagObj(name, func, primaryprefix, secondaryprefix,  description) 
     {
         if (!(name && call && primaryprefix))
             throw new TypeError("Invalid args for flag creation!")
@@ -8,19 +8,19 @@ class flagObj
         this.name = name
         this.ppf = primaryprefix
         this.spf = secondaryprefix
-        this.call = call
+        this.func = func
         this.des = description
     }
 }
 
 class commandObj
 {
-    commandObj(name, call, primaryname, secondaryname, args) {
-        if (!(name && call && primaryname))
+    commandObj(name, func, primaryname, secondaryname, args) {
+        if (!(name && func && primaryname))
             throw new TypeError("Invalid args for command creation!")
 
         this.name = name
-        this.call = call
+        this.func = func
         this.pname = primaryname
         this.sname = secondaryname
         this.args = args || 0
@@ -100,18 +100,28 @@ function rawFlags(command, args)
             break
         }
 
+        const flagargs = []
         for (var k = 0; k < flag.args; k++)
         {
-            
+            flagargs.push(args[i+k])
         }
         i += flag.args
+
+        flag.func(flagargs)
     }
 
     return err == undefined, err
 }
 
-function HandlerFlags(commandLine, str, yell)
+function HandleFlags(commandLine, str, yell)
 {
     const args = str.split(" ")
     const command = args[0]
+    args.shift()
+
+    const cmd = commandLine.calls[command]
+    if (cmd)
+    {
+        rawFlags(cmd, args)
+    }
 }
