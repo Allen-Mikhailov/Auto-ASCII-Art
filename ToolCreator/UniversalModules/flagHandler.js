@@ -113,7 +113,7 @@ function rawFlags(command, args)
     return err == undefined, err
 }
 
-function HandleFlags(commandLine, str, yell)
+function handleFlags(commandLine, str, yell)
 {
     const args = str.split(" ")
     const command = args[0]
@@ -125,3 +125,10 @@ function HandleFlags(commandLine, str, yell)
         rawFlags(cmd, args)
     }
 }
+
+exports.handleFlags = handleFlags
+exports.rawFlags = rawFlags
+
+exports.flagObj = flagObj
+exports.commandObj = commandObj
+exports.commandLineObj = commandLineObj

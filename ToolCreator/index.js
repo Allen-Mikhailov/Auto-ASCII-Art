@@ -1,5 +1,15 @@
-const tree = require("./UniversalModules/settingtree.js")
+const fs = require("fs")
+const CMDHandler = require("./UniversalModules/flagHandler")
+const argv = process.argv
 
-const args = process.argv
+const mainCl = new CMDHandler.commandLineObj()
+const baseCMDPath = __filename +"\\..\\"+ "\\baseCommands"
+const baseCMDFiles = fs.readdirSync(baseCMDPath)
 
-//Arg Template
+for (var i = 0; i < baseCMDFiles.length; i++)
+{
+    
+}
+
+
+// CMDHandler.handleFlags()
