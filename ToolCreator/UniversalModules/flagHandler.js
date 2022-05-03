@@ -1,6 +1,6 @@
 class flagObj
 {
-    flagObj(name, func, primaryprefix, secondaryprefix,  description) 
+    constructor(name, func, primaryprefix, secondaryprefix,  description) 
     {
         if (!(name && call && primaryprefix))
             throw new TypeError("Invalid args for flag creation!")
@@ -15,7 +15,7 @@ class flagObj
 
 class commandObj
 {
-    commandObj(name, func, primaryname, secondaryname, args) {
+    constructor(name, func, primaryname, secondaryname, args) {
         if (!(name && func && primaryname))
             throw new TypeError("Invalid args for command creation!")
 
