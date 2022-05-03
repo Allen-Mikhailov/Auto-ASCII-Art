@@ -1,7 +1,7 @@
 const fs = require("fs")
 var getPixels = require("get-pixels")
 
-const basepath = process.argv[1]+"/../../"
+const basepath = process.argv[1]+"/../../+"
 console.log(basepath)
 
 exports.function = function(settings, run, save)

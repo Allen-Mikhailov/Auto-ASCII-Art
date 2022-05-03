@@ -113,9 +113,8 @@ function rawFlags(command, args)
     return err == undefined, err
 }
 
-function handleFlags(commandLine, str, yell)
+function handleFlags(commandLine, args, yell)
 {
-    const args = str.split(" ")
     const command = args[0]
     args.shift()
 

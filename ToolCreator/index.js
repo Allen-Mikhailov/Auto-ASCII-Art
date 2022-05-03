@@ -8,8 +8,9 @@ const baseCMDFiles = fs.readdirSync(baseCMDPath)
 
 for (var i = 0; i < baseCMDFiles.length; i++)
 {
-    
+    mainCl.addCommand(require("./baseCommands/" + baseCMDFiles[i]))
 }
 
 
-// CMDHandler.handleFlags()
+console.log(argv)
+CMDHandler.handleFlags(mainCl, argv.slice(2))
