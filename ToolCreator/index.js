@@ -11,6 +11,4 @@ for (var i = 0; i < baseCMDFiles.length; i++)
     mainCl.addCommand(require("./baseCommands/" + baseCMDFiles[i]))
 }
 
-
-console.log(argv)
 CMDHandler.handleFlags(mainCl, argv.slice(2))

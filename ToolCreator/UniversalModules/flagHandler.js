@@ -51,10 +51,10 @@ class commandObj
 
 class commandLineObj
 {
-    commandLineObj()
+    constructor()
     {
-        commands = []
-        calls = {}
+        this.commands = []
+        this.calls = {}
     }
 
     commandPrefixError(command, prefixtype)
