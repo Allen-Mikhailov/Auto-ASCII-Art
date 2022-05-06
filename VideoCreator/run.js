@@ -3,6 +3,7 @@ const noise = require("./noise").noise
 const RenderMode = require("../ImageConversion/RenderMode/black-white.js")
 
 const floor = Math.floor
+const ceil = Math.ceil
 const sin = Math.sin
 const cos = Math.cos
 const sqrt = Math.sqrt
@@ -134,25 +135,50 @@ const MeteorSwaySpeed = cos(MeteorFallAngle)*MeteorSpeed
 const MeteorsLifeTime = MainFrame.sizey/MeteorFallSpeed
 const MeteorCycles = 100
 
-const Loops = Math.floor(Frames/MeteorsLifeTime)
-const TotalSpacingFrames = Frames-(Loops*MeteorsLifeTime)
-const SpacingFrames = Math.floor(TotalSpacingFrames/Loops)
-const StartingY = -MeteorSpeed*SpacingFrames
-const CycleLength = (Math.floor(MeteorsLifeTime)+SpacingFrames)
+// const Loops = Math.floor(Frames/MeteorsLifeTime)
+// const TotalSpacingFrames = Frames-(Loops*MeteorsLifeTime)
+// const SpacingFrames = Math.floor(TotalSpacingFrames/Loops)
+// const StartingY = -MeteorSpeed*SpacingFrames
+// const CycleLength = (Math.floor(MeteorsLifeTime)+SpacingFrames)
+
+const periodseed = 2876678
+const xseed = 4537378
+
+function random(seed, MeteorId, range)
+{
+    return floor((seed*MeteorId)%range)
+}
+
+function frameOffset(offset)
+{
+    return (Frames*2 + offset)%Frames
+}
 
 function GetMeteorPos(Frame, MeteorId)
 {
-    Frame = (Frame+MeteorId)%Frames
+    // Frame = (Frame+MeteorId)%Frames
 
-    const CurrentLoop = Math.floor(Frame/CycleLength)
-    const LoopOffset = Frame-CurrentLoop*CycleLength
+    // const CurrentLoop = Math.floor(Frame/CycleLength)
+    // const LoopOffset = Frame-CurrentLoop*CycleLength
 
-    const StartingX = Fsizex/2+((CurrentLoop+1)*MeteorId**77)%(Fsizex/2)
+    // const StartingX = ((CurrentLoop+1)*MeteorId**77)%(Fsizex)
 
-    return [StartingX+MeteorSwaySpeed*LoopOffset, StartingY+LoopOffset*MeteorFallSpeed]
+    // return [StartingX+MeteorSwaySpeed*LoopOffset, StartingY+LoopOffset*MeteorFallSpeed]
+
+    const periodlength = ceil((Fsizey+MeteorFrame.sizey)/MeteorSpeed)
+    const period = random(periodseed, MeteorId, Frames)
+    const x = random(xseed, MeteorId, Fsizex)
+    // Frame = (frames + Frame-period)%frames
+
+    const startx = x + MeteorSwaySpeed*(Frames-period)
+    const starty = -MeteorFallSpeed* frameOffset(period+periodlength)
+
+    // console.log(x)
+    
+    return [startx + MeteorSwaySpeed*Frame, 100]//starty + MeteorFallSpeed*Frame]
 }
 
-const outputfilename = "video.js"
+const outputfilename = process.argv[1]+"\\..\\"+"video.js"
 const Stream = fs.createWriteStream(outputfilename)
 Stream.write("const videodata = [")
 
@@ -172,5 +198,9 @@ for (var i = 0; i < Frames; i++) {
     Stream.write(JSON.stringify(MainFrame)+",")
 }
 
+console.log()
+
 Stream.write("]")
 Stream.close()
+
+// console.log("lol")
