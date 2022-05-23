@@ -49,6 +49,3 @@ function grad(hash, x, y, z) {
     return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 }
 function scale(n) { return (1 + n) / 2; }
-
-console.log(6557575 & 255)
-console.log(6557575%255)

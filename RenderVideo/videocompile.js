@@ -1,6 +1,6 @@
 var sourcehtmFile = "./rendertextvid.htm"
 
-var inputdirPath = "../ImageConversion/output"
+var inputdirPath = "../VideoCreator/Frames"
 var outputFilePath = "./output/gif.htm"
 
 const flags = require("../modules/flags")
@@ -46,18 +46,18 @@ const flagdata = {
 }
 flags.HandleFlags(process.argv, flagdata)
 
-const testframe = fs.readFileSync(inputdirPath+"/Frame1.png.txt").toString()
+const testframe = fs.readFileSync(inputdirPath+"/1.txt").toString()
 const width = testframe.indexOf("\n")
 const height = testframe.split("\n").length-1
 
 // console.log(fs.readdirSync(inputdirPath))
 
 const saveobject = {}
-saveobject.FrameCount = 100//fs.readdirSync(inputdirPath).length
+saveobject.FrameCount = 500//fs.readdirSync(inputdirPath).length
 saveobject.width = width
 saveobject.height = height
 
-const filestart = "Screenshot 2022-03-27 123241.png"
+const filestart = ""
 
 for (var i = 0; i < saveobject.FrameCount; i++)
 {

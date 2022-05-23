@@ -28,19 +28,9 @@
 
         function render()
         {
-            frame = (frame+speed*direction)
+            frame = (frame+speed*direction)%frames.length
 
-            if (Math.floor(frame) > frames.length-1)
-            {
-                frame = frames.length-1
-                direction *= -1
-            }
-
-            if (frame < 0)
-            {
-                frame = 0
-                direction *= -1
-            }
+            console.log(Math.floor(frame))
 
             canvas.innerHTML = frames[Math.floor(frame)]
             requestAnimationFrame(render)
